@@ -1,3 +1,5 @@
+""" Minigame base module """
+
 from abc import ABCMeta, abstractmethod
 from game import Game
 

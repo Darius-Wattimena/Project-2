@@ -1,3 +1,5 @@
+""" Image module """
+
 class Image:
     """ Image class used to handle """
     def __init__(self, data, rect):
