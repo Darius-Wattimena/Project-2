@@ -1,5 +1,6 @@
+""" Call this module when starting the game """
 import pygame
-from Game import Game
+from game import Game
 
-game = Game(1280, 720)
-game.startGame()
+gameInstance = Game(1280, 720)
+gameInstance.start()
