@@ -2,6 +2,7 @@
 
 from abc import ABCMeta, abstractmethod
 from game import Game
+import pygame
 
 class MinigameBase(object):
     """ Abstract minigame base class used for all the minigames """

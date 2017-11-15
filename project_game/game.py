@@ -1,6 +1,6 @@
 """ Game module """
 import pygame as py, logging
-from drawer import Drawer
+from helper.drawer import Drawer
 
 class Game:
     """ Game class where every input is handled, screen is being rendered and the current minigame is going to be managed. """

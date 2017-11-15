@@ -1,6 +1,6 @@
 """ Drawer module """
 import pygame as py
-from image import Image
+from .image import Image
 
 class Drawer:
     """ Drawer class used when drawing an image to the screen """   
