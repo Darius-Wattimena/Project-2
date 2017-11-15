@@ -34,6 +34,7 @@ class Game:
         """ Start the game. """
         self.setupWindow()
         self.drawer = Drawer(self.screen)
+        self.drawer.addImage("pygame_tiny.png")
         self.drawer.addImage("1327.jpg")
         self.running = True
         while self.running:
@@ -68,6 +69,17 @@ class Game:
         if self.minigame is not None:
             self.minigame.handleKeyboardInput(event)
         self.logger.info(event.key)
+        
+        image = self.drawer.items[1]
+        image2 = self.drawer.items[1]
+        if event.key == py.K_LEFT:
+            image.move(-1, 0)
+        elif event.key == py.K_RIGHT:
+            image.move(1, 0)
+        elif event.key == py.K_UP:
+            image.move(0, -1)
+        elif event.key == py.K_DOWN:
+            image.move(0, 1)
 
     def setupWindow(self):
         """ Setup the window. """
