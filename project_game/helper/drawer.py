@@ -18,6 +18,6 @@ class Drawer:
 
     def drawCanvas(self):
         """ Make the screen empty so we can add new images on the screen """
-        self.screen.fill(0, 0, 0) # RGB
+        self.screen.fill((0, 0, 0)) # RGB
         for item in self.items:
             self.screen.blit(item.data, item.rect)            

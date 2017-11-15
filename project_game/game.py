@@ -34,10 +34,12 @@ class Game:
         """ Start the game. """
         self.setupWindow()
         self.drawer = Drawer(self.screen)
+        self.drawer.addImage("1327.jpg")
         self.running = True
         while self.running:
             self.clock.tick(30)
             self.processEvents(py.event.get())
+            self.render()
 
     def quit(self):
         """ Quit the game. """
@@ -72,7 +74,7 @@ class Game:
         self.screen = py.display.set_mode([self.screen_x, self.screen_y])
         py.display.set_caption(self.name)
 
-    def render(self, d: Drawer):
+    def render(self):
         """ Render all the images given to the drawer on the screen. """
-        d.drawCanvas()
-        self.screen.update()
+        self.drawer.drawCanvas()
+        py.display.update()
