@@ -8,16 +8,24 @@ class Drawer:
         self.items = []
         self.screen = screen
 
-    def addImage(self, name):
+    def add_image(self, name):
         """ Add a new image to the items list """
-        data = py.image.load(name)
+        data = self.load_image(name)
         rect = data.get_rect()
         image = Image(data, rect)
 
         self.items.append(image)
 
-    def drawCanvas(self):
+    def draw_canvas(self):
         """ Make the screen empty so we can add new images on the screen """
         self.screen.fill((0, 0, 0)) # RGB
         for item in self.items:
-            self.screen.blit(item.data, item.rect)            
+            self.screen.blit(item.data, item.rect)
+
+    def load_image(self, file):
+        """ loads an image, prepares it for play """
+        try:
+            surface = py.image.load(file)
+        except py.error:
+            raise SystemExit('Could not load image "%s" %s'%(file, py.get_error()))
+        return surface.convert()         

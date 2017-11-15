@@ -1,4 +1,4 @@
-from image import Image
+from .image import Image
 import pygame
 
 class Animation(pygame.sprite.Sprite):
@@ -8,7 +8,7 @@ class Animation(pygame.sprite.Sprite):
         self.image = None
         self.rect = None
 
-    def addImage(self, image:Image):
+    def add_image(self, image: Image):
         self.images.append(image)
         if self.rect == None:
             self.rect = image.rect
@@ -17,6 +17,5 @@ class Animation(pygame.sprite.Sprite):
         self.index += 1
         if self.index >= len(self.images):
             self.index = 0
-        self.image = self.images[self.index].data
-        
+        self.image = self.images[self.index].data        
     

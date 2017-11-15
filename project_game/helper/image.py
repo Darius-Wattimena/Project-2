@@ -10,10 +10,14 @@ class Image:
 
     def clone(self, position_x=0, position_y=0):
         """ Return a clone of this image with a new image rectangle """
-        cloneRect = self.rect.move(position_x, position_y)
-        clonedImage = Image(self.data, cloneRect)
-        return clonedImage
+        clone_rect = self.rect.move(position_x, position_y)
+        cloned_image = Image(self.data, clone_rect)
+        return cloned_image
 
     def move(self, x, y):
         """ Move this image to a new position """
         self.rect.move_ip(x,y)
+
+    def is_collided(self, other):
+        """ Checks if there is collision """
+        self.rect.colliderect(other.rect)

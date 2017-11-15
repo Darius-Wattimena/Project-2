@@ -12,10 +12,11 @@ class Game:
         self.screen_y = screen_y
         self.running = False
         self.minigame = None
+        self.drawer = None
         self.clock = py.time.Clock()
-        self.enableLogging()
+        self.enable_logging()
 
-    def enableLogging(self):
+    def enable_logging(self):
         self.logger = logging.getLogger('scope.name')
         self.logger.setLevel(logging.DEBUG)
 
@@ -32,61 +33,62 @@ class Game:
 
     def start(self):
         """ Start the game. """
-        self.setupWindow()
+        self.setup_window()
         self.drawer = Drawer(self.screen)
-        self.drawer.addImage("pygame_tiny.png")
-        self.drawer.addImage("1327.jpg")
+        self.drawer.add_image("pygame_tiny.png")
+        self.drawer.add_image("1327.jpg")
         self.running = True
         while self.running:
             self.clock.tick(30)
-            self.processEvents(py.event.get())
+            self.process_events(py.event.get())
             self.render()
 
     def quit(self):
         """ Quit the game. """
         py.quit()
             
-    def processEvents(self, events):
+    def process_events(self, events):
         """ Process all the events we get from pygame. """
+        self.handle_key_press()
+
         for event in events:
-            eventType = event.type
-            if eventType == py.QUIT:
+            event_type = event.type
+            if event_type == py.QUIT:
                 self.running = False
                 self.quit()
-            elif eventType == py.MOUSEBUTTONDOWN:
-                self.handleMousePress(event)
-            elif eventType == py.KEYDOWN:
-                self.handleKeyPress(event)      
+            elif event_type == py.MOUSEBUTTONDOWN:
+                self.handle_mouse_press(event)
+                      
     
-    def handleMousePress(self, event):
+    def handle_mouse_press(self, event):
         """ Get called when a mouse button is pressed. """
         if self.minigame is not None:
             self.minigame.handleMouseClickInput(event)
         self.logger.info(event.button)
 
-    def handleKeyPress(self, event):
+    def handle_key_press(self):
         """ Get called when a key is pressed. """
+        keys = py.key.get_pressed()
         if self.minigame is not None:
-            self.minigame.handleKeyboardInput(event)
-        self.logger.info(event.key)
+            self.minigame.handleKeyboardInput(keys)
         
         image = self.drawer.items[1]
         image2 = self.drawer.items[1]
-        if event.key == py.K_LEFT:
+        if keys[py.K_LEFT]:
             image.move(-1, 0)
-        elif event.key == py.K_RIGHT:
+        if keys[py.K_RIGHT]:
             image.move(1, 0)
-        elif event.key == py.K_UP:
+        if keys[py.K_UP]:
             image.move(0, -1)
-        elif event.key == py.K_DOWN:
+        if keys[py.K_DOWN]:
             image.move(0, 1)
 
-    def setupWindow(self):
+    def setup_window(self):
         """ Setup the window. """
         self.screen = py.display.set_mode([self.screen_x, self.screen_y])
         py.display.set_caption(self.name)
 
     def render(self):
         """ Render all the images given to the drawer on the screen. """
-        self.drawer.drawCanvas()
+        self.drawer.draw_canvas()
         py.display.update()
