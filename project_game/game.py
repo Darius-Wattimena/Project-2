@@ -1,6 +1,7 @@
 """ Game module """
 import pygame as py, logging
-from helper.drawer import Drawer
+from .helper.drawer import Drawer
+from .minigame1.minigame import Minigame_1
 
 class Game:
     """ Game class where every input is handled, screen is being rendered and the current minigame is going to be managed. """
@@ -38,10 +39,36 @@ class Game:
         self.drawer.add_image("pygame_tiny.png")
         self.drawer.add_image("1327.jpg")
         self.running = True
+        self.start_minigame(1)
         while self.running:
             self.clock.tick(30)
             self.process_events(py.event.get())
             self.render()
+
+    def start_minigame(self, number):
+        minigames = {
+            1 : self.start_minigame_1,
+            2 : self.start_minigame_2,
+            3 : self.start_minigame_3,
+            4 : self.start_minigame_4,
+            5 : self.start_minigame_5,
+        }
+        minigames[number]()
+    
+    def start_minigame_1(self):
+        self.minigame = Minigame_1(self)
+
+    def start_minigame_2(self):
+        pass
+
+    def start_minigame_3(self):
+        pass
+
+    def start_minigame_4(self):
+        pass
+
+    def start_minigame_5(self):
+        pass
 
     def quit(self):
         """ Quit the game. """
@@ -49,39 +76,54 @@ class Game:
             
     def process_events(self, events):
         """ Process all the events we get from pygame. """
-        self.handle_key_press()
+        self.handle_key_input()
+        self.handle_mouse_input()
 
         for event in events:
             event_type = event.type
             if event_type == py.QUIT:
                 self.running = False
                 self.quit()
+            elif event_type == py.MOUSEBUTTONUP:
+                self.handle_mouse_release(event)
             elif event_type == py.MOUSEBUTTONDOWN:
                 self.handle_mouse_press(event)
-                      
+            elif event_type == py.KEYDOWN:
+                self.handle_key_press(event)
+            elif event_type == py.KEYUP:
+                self.handle_key_release(event)
+
+    def handle_mouse_input(self):
+        """ Handle mouse motion """
+        mouse_position = py.mouse.get_pos()
+        if self.minigame is not None:
+            self.minigame.handle_mouse_position(mouse_position)       
     
     def handle_mouse_press(self, event):
         """ Get called when a mouse button is pressed. """
         if self.minigame is not None:
-            self.minigame.handleMouseClickInput(event)
-        self.logger.info(event.button)
+            self.minigame.handle_mouse_down(event)
 
-    def handle_key_press(self):
-        """ Get called when a key is pressed. """
+    def handle_mouse_release(self, event):
+        """ Get called when a mouse button is released. """
+        if self.minigame is not None:
+            self.minigame.handle_mouse_up(event)
+
+    def handle_key_input(self):
+        """ Handle all the pressed keys.  """
         keys = py.key.get_pressed()
         if self.minigame is not None:
-            self.minigame.handleKeyboardInput(keys)
-        
-        image = self.drawer.items[1]
-        image2 = self.drawer.items[1]
-        if keys[py.K_LEFT]:
-            image.move(-1, 0)
-        if keys[py.K_RIGHT]:
-            image.move(1, 0)
-        if keys[py.K_UP]:
-            image.move(0, -1)
-        if keys[py.K_DOWN]:
-            image.move(0, 1)
+            self.minigame.handle_keyboard_input(keys)
+
+    def handle_key_press(self, event):
+        """ Get called when a key is pressed. """
+        if self.minigame is not None:
+            self.minigame.handle_keyboard_down(event)
+
+    def handle_key_release(self, event):
+        """ Get called when a key is released. """
+        if self.minigame is not None:
+            self.minigame.handle_keyboard_up(event)
 
     def setup_window(self):
         """ Setup the window. """
