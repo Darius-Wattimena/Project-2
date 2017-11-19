@@ -9,6 +9,9 @@ class MinigameBase(object):
     def __init__(self, game):
         self.game = game
 
+    def set_screen(self, screen):
+        self.screen = screen
+
     @abstractmethod
     def handle_mouse_position(self, mouse_position):
         """ Gets called every frame giving the current mouse_position """
@@ -20,26 +23,21 @@ class MinigameBase(object):
         pass
 
     @abstractmethod
-    def handle_mouse_down(self, event):
-        """ Gets called when a mouse button is pressed """
-        pass
-
-    @abstractmethod
-    def handle_mouse_up(self, event):
-        """ Gets called when a mouse button is lifted """
-        pass
-
-    @abstractmethod
     def handle_keyboard_input(self, keys):
         """ Gets called when a key is being hold """
         pass
 
     @abstractmethod
-    def handle_keyboard_down(self, event):
-        """ Gets called when a key is pressed """
+    def on_event(self, event):
+        """ Gets called on an event """
         pass
 
     @abstractmethod
-    def handle_keyboard_up(self, event):
-        """ Gets called when a key is lifted """
+    def update(self):
+        """ Gets called every frame before the render """
+        pass
+
+    @abstractmethod
+    def render(self):
+        """ Gets called on an event used only to render to the screen """
         pass

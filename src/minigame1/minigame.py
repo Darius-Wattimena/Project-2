@@ -1,7 +1,12 @@
 from ..minigame_base import MinigameBase
+from .fight import Fight
 import pygame as py
 
 class Minigame_1(MinigameBase):
+
+    def __init__(self, game):
+        super(Minigame_1, self)
+        self.minigame_screen = Fight()
 
     def handle_mouse_input(self, event):
         return
@@ -22,14 +27,11 @@ class Minigame_1(MinigameBase):
     def handle_mouse_position(self, mouse_position):
         return
 
-    def handle_mouse_down(self, event):
+    def on_event(self, event):
         return
 
-    def handle_mouse_up(self, event):
+    def update(self):
         return
 
-    def handle_keyboard_down(self, event):
-        return
-
-    def handle_keyboard_up(self, event):
+    def render(self):
         return

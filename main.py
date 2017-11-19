@@ -1,5 +1,14 @@
 """ Call this module when starting the game """
-from project_game.game import Game
+from src.game import Game
+from src.game_config import GameConfig
+import pygame as py
 
-GAME_INSTANCE = Game("Game", 1280, 720)
+py.init()
+
+CONFIG = GameConfig()
+
+py.display.set_caption(CONFIG.title)
+screen = py.display.set_mode([CONFIG.width, CONFIG.height])
+
+GAME_INSTANCE = Game(screen)
 GAME_INSTANCE.start()

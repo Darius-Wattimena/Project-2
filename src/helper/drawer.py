@@ -1,11 +1,17 @@
 """ Drawer module """
 import pygame as py
 from .image import Image
+from .singleton import Singleton
 
-class Drawer:
+@Singleton
+class Drawer():
     """ Drawer class used when drawing an image to the screen """   
-    def __init__(self, screen):
+
+    def __init__(self):
         self.items = []
+        self.screen = None
+
+    def set_screen(self, screen):
         self.screen = screen
 
     def add_image(self, name):
@@ -28,4 +34,7 @@ class Drawer:
             surface = py.image.load(file)
         except py.error:
             raise SystemExit('Could not load image "%s" %s'%(file, py.get_error()))
-        return surface.convert()         
+        return surface.convert()
+
+    def clear(self):
+        self.items = []         
