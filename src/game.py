@@ -1,14 +1,15 @@
 """ Game module """
 import pygame as py, logging
 from .helper.drawer import Drawer
-from .minigame1.minigame import Minigame_1
+from .helper.singleton import Singleton
+from .global_screens.main_menu import MainMenu
 
+@Singleton
 class Game:
     """ Game class where every input is handled, screen is being rendered and the current minigame is going to be managed. """
 
-    def __init__(self, screen):
+    def __init__(self):
         self.enable_logging()
-        self.screen = screen
         self.running = False
         self.minigame = None
         self.drawer = None
@@ -29,84 +30,35 @@ class Game:
         file_log_handler.setFormatter(formatter)
         stderr_log_handler.setFormatter(formatter)
 
-    def start(self):
+    def start(self, py_screen):
         """ Start the game. """
+        self.py_screen = py_screen
         self.drawer = Drawer.Instance()
-        self.drawer.set_screen(self.screen)
-        self.drawer.add_image("pygame_tiny.png")
-        self.drawer.add_image("1327.jpg")
+        self.drawer.set_screen(self.py_screen)
+        self.screen = MainMenu()
         self.running = True
-        self.start_minigame(1)
         self.game_loop()
     
     def game_loop(self):
         while self.running:
             self.clock.tick(30)
-            self.process_events()
-            self.render()
+            self.screen.handle_key_input(py.key.get_pressed())
+            self.screen.handle_mouse_input(py.mouse.get_pressed())
+            self.screen.handle_mouse_position(py.mouse.get_pos())
+            self.handle_events(py.event.get())
+            self.screen.on_update()
+            self.screen.on_render()
 
-    def start_minigame(self, number):
-        minigames_dict = {
-            1 : self.start_minigame_1,
-            2 : self.start_minigame_2,
-            3 : self.start_minigame_3,
-            4 : self.start_minigame_4,
-            5 : self.start_minigame_5,
-        }
-        minigames_dict[number]()
-    
-    def start_minigame_1(self):
-        self.minigame = Minigame_1(self)
-
-    def start_minigame_2(self):
-        pass
-
-    def start_minigame_3(self):
-        pass
-
-    def start_minigame_4(self):
-        pass
-
-    def start_minigame_5(self):
-        pass
-            
-    def process_events(self):
-        """ Process all the events we get from pygame. """
-        self.handle_key_input()
-        self.handle_mouse_input()
-        events = py.event.get()
-
+    def handle_events(self, events):
         for event in events:
             if event.type == py.QUIT:
-                self.running = False
                 self.quit()
-            elif self.minigame is not None:
-                self.minigame.on_event(event)
-
-
-    def handle_key_input(self):
-        """ Handle all the pressed keys.  """
-        keys = py.key.get_pressed()
-        if self.minigame is not None:
-            self.minigame.handle_keyboard_input(keys)
-
-    def handle_mouse_input(self):
-        """ Handle mouse motion. """
-        mouse_position = py.mouse.get_pos()
-        if self.minigame is not None:
-            self.minigame.handle_mouse_position(mouse_position)
-
-    def update(self):
-        if self.minigame is not None:
-            self.minigame.update()
-
-    def render(self):
-        """ Render all the images given to the drawer on the screen. """
-        self.drawer.draw_canvas()
-        py.display.update()
-        if self.minigame is not None:
-            self.minigame.render()
+        self.screen.on_events(events)
 
     def quit(self):
         """ Quit the game. """
+        self.running = False
         py.quit()
+
+    def set_screen(self, screen):
+        self.screen = screen

@@ -10,5 +10,5 @@ CONFIG = GameConfig()
 py.display.set_caption(CONFIG.title)
 screen = py.display.set_mode([CONFIG.width, CONFIG.height])
 
-GAME_INSTANCE = Game(screen)
-GAME_INSTANCE.start()
+GAME_INSTANCE = Game.Instance()
+GAME_INSTANCE.start(screen)
