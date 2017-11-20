@@ -1,7 +1,7 @@
 import pygame as py
 
 class Button:
-    def __init__(self, screen, text, default, hover, font_color, font_color_hover, font_size):
+    def __init__(self, screen, text, default, hover, font_color, font_color_hover, font_size, width, height):
         self.screen = screen
         self.text = text
         self.default = default
@@ -10,6 +10,9 @@ class Button:
         self.font_color_hover = font_color_hover
         self.font_size = font_size
         self.is_hovering = False
+        self.width = width
+        self.height = height
+        self.rect = None
 
     def get_background(self):
         if self.is_hovering:
@@ -24,15 +27,18 @@ class Button:
         else:
             return font.render(self.text, True, self.font_color)
 
-    def render(self, mouse_position, rect_coord):
-        self.obj = py.draw.rect(self.screen, self.get_background(), rect_coord)
+    def render(self, mouse_position, x, y):
+        self.rect = py.draw.rect(self.screen, self.get_background(), [x, y, self.width, self.height])
         text = self.render_text()
-        text_rect = text.get_rect(center = self.obj.center)
+        text_rect = text.get_rect(center=self.rect.center)
         self.screen.blit(text, text_rect)
         self.check_hover(mouse_position)
 
     def check_hover(self, mouse_position):
-        if self.obj.collidepoint(mouse_position):
+        if self.rect.collidepoint(mouse_position):
             self.is_hovering = True
         else:
             self.is_hovering = False
+
+    def is_clicked(self, mouse_position):
+        return self.rect.collidepoint(mouse_position)

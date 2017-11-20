@@ -4,9 +4,10 @@ from .helper.drawer import Drawer
 from .helper.singleton import Singleton
 from .global_screens.main_menu import MainMenu
 
+
 @Singleton
 class Game:
-    """ Game class where every input is handled, screen is being rendered and the current minigame is going to be managed. """
+    """ This class is where the start and stop the game and where we place the game loop. """
 
     def __init__(self):
         self.enable_logging()
@@ -38,7 +39,7 @@ class Game:
         self.screen = MainMenu(self)
         self.running = True
         self.game_loop()
-    
+
     def game_loop(self):
         while self.running:
             self.clock.tick(30)

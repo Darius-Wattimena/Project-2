@@ -4,12 +4,12 @@ from ..helper.game_object_group import GameObjectGroup
 from .fight import Fight
 import pygame as py
 
-class Minigame_1(ScreenBase):
 
+class Minigame_1(ScreenBase):
     def __init__(self, game):
         self.game = game
         self.game.set_screen(self)
-        self.minigame_screen = Fight()  
+        self.minigame_screen = Fight()
 
     def on_events(self, events):
         return
