@@ -1,12 +1,18 @@
 from ..helper.screen_base import ScreenBase
 from ..minigame1.minigame import Minigame_1
-from src.game import Game
+from ..helper.button import Button
 import pygame as py
 
 class MainMenu(ScreenBase):
 
-    def __init__(self):
-        self.game = Game.Instance()
+    def __init__(self, game):
+        self.game = game
+        self.minigame_1_button = Button(self.game.py_screen, "Minigame 1", [144,144,144], [57,57,57], [0, 0, 0], [255,255,255], 50)
+        self.minigame_2_button = Button(self.game.py_screen, "Minigame 2", [144,144,144], [57,57,57], [0, 0, 0], [255,255,255], 50)
+        self.minigame_3_button = Button(self.game.py_screen, "Minigame 3", [144,144,144], [57,57,57], [0, 0, 0], [255,255,255], 50)
+        self.minigame_4_button = Button(self.game.py_screen, "Minigame 4", [144,144,144], [57,57,57], [0, 0, 0], [255,255,255], 50)
+        self.minigame_5_button = Button(self.game.py_screen, "Minigame 5", [144,144,144], [57,57,57], [0, 0, 0], [255,255,255], 50)
+        self.quit_button = Button(self.game.py_screen, "Quit", [144,144,144], [57,57,57], [0, 0, 0], [255,255,255], 50)
 
     def on_events(self, events):
         return
@@ -16,6 +22,11 @@ class MainMenu(ScreenBase):
 
     def on_render(self):
         self.game.drawer.draw_canvas()
+        self.minigame_1_button.render(self.mouse_position, [370, 100, 300, 70])
+        self.minigame_2_button.render(self.mouse_position, [370, 200, 300, 70])
+        self.minigame_3_button.render(self.mouse_position, [370, 300, 300, 70])
+        self.minigame_4_button.render(self.mouse_position, [370, 400, 300, 70])
+        self.minigame_5_button.render(self.mouse_position, [370, 500, 300, 70])
         py.display.update()
 
     def handle_mouse_input(self, mouse):
@@ -28,6 +39,7 @@ class MainMenu(ScreenBase):
         return
 
     def handle_mouse_position(self, mouse_position):
+        self.mouse_position = mouse_position
         return
 
     def start_minigame(self, number):
@@ -41,7 +53,7 @@ class MainMenu(ScreenBase):
         minigames_dict[number]()
 
     def start_minigame_1(self):
-        self.screen = Minigame_1()
+        self.screen = Minigame_1(self.game)
 
     def start_minigame_2(self):
         pass

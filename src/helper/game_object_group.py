@@ -1,7 +1,7 @@
 
 class GameObjectGroup:
 
-    def __init__(self, layer):
+    def __init__(self, layer= 1):
         self.objects = []
         self.layer = layer
 

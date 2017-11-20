@@ -21,9 +21,6 @@ class ScreenBase(object):
         """ Gets called on an event used only to render to the screen """
         pass
 
-    def set_screen(self, screen):
-        self.screen = screen
-
     @abstractmethod
     def handle_mouse_position(self, mouse_position):
         """ Gets called every frame giving the current mouse_position """
@@ -35,6 +32,6 @@ class ScreenBase(object):
         pass
 
     @abstractmethod
-    def handle_keyboard_input(self, keys):
+    def handle_key_input(self, keys):
         """ Gets called when a key is being hold """
         pass

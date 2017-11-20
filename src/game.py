@@ -35,7 +35,7 @@ class Game:
         self.py_screen = py_screen
         self.drawer = Drawer.Instance()
         self.drawer.set_screen(self.py_screen)
-        self.screen = MainMenu()
+        self.screen = MainMenu(self)
         self.running = True
         self.game_loop()
     
@@ -46,8 +46,9 @@ class Game:
             self.screen.handle_mouse_input(py.mouse.get_pressed())
             self.screen.handle_mouse_position(py.mouse.get_pos())
             self.handle_events(py.event.get())
-            self.screen.on_update()
-            self.screen.on_render()
+            if self.running:
+                self.screen.on_update()
+                self.screen.on_render()
 
     def handle_events(self, events):
         for event in events:
