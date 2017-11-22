@@ -12,8 +12,9 @@ class Game:
     def __init__(self):
         self.enable_logging()
         self.running = False
-        self.minigame = None
         self.drawer = None
+        self.py_screen = None
+        self.screen = None
         self.clock = py.time.Clock()
 
     def enable_logging(self):

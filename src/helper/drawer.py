@@ -33,9 +33,10 @@ class Drawer():
         self.items.append(image)
 
     def add_game_object(self, name, game_object):
+        """" Use this to load static things that do not move like a wall or a fence """
         data = self.load_image(name)
         rect = data.get_rect()
-        game_object.rect = rect
+        game_object.set_rect(rect)
         self.game_object_items.append(game_object)
 
     def draw_canvas(self):

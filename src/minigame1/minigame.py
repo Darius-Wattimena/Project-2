@@ -6,10 +6,14 @@ import pygame as py
 
 
 class Minigame_1(ScreenBase):
+    # TODO add help screen here for now just start the fight screen.
     def __init__(self, game):
         self.game = game
         self.game.set_screen(self)
-        self.minigame_screen = Fight()
+        self.start_fight()
+
+    def start_fight(self):
+        Fight(self.game)
 
     def on_events(self, events):
         return

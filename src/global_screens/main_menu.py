@@ -21,15 +21,15 @@ class MainMenu(ScreenBase):
         for event in events:
             if event.type == py.MOUSEBUTTONDOWN:
                 if self.btn_1.is_clicked(self.mouse_position):
-                    self.start_minigame(1)
+                    self.start_minigame_1()
                 elif self.btn_2.is_clicked(self.mouse_position):
-                    self.start_minigame(2)
+                    self.start_minigame_2()
                 elif self.btn_3.is_clicked(self.mouse_position):
-                    self.start_minigame(3)
+                    self.start_minigame_3()
                 elif self.btn_4.is_clicked(self.mouse_position):
-                    self.start_minigame(4)
+                    self.start_minigame_4()
                 elif self.btn_5.is_clicked(self.mouse_position):
-                    self.start_minigame(5)
+                    self.start_minigame_5()
                 elif self.btn_6.is_clicked(self.mouse_position):
                     self.game.quit()
 
@@ -78,7 +78,7 @@ class MainMenu(ScreenBase):
 
     def start_minigame_1(self):
         self.game.drawer.clear()
-        self.screen = Minigame_1(self.game)
+        Minigame_1(self.game)
 
     def start_minigame_2(self):
         pass
