@@ -1,106 +1,66 @@
-from ..helper.screen_base import ScreenBase
-from ..minigame1.minigame import Minigame_1
-from ..helper.button import Button
-from ..helper.label import Label
+from src.helper.image_button import ImageButton
+from src.helper.screen_base import ScreenBase
+from src.helper.label import Label
 import pygame as py
 
 
 class MainMenu(ScreenBase):
     def __init__(self, game):
         self.game = game
+        self.game.set_screen(self)
         game.drawer.add_background_image("resources/graphics/main_menu_background.png")
-        self.title = Label(game.py_screen, "Game Title", [0, 0, 0], 75)
-        self.btn_1 = MainMenuButton(game.py_screen, "Minigame 1")
-        self.btn_2 = MainMenuButton(game.py_screen, "Minigame 2")
-        self.btn_3 = MainMenuButton(game.py_screen, "Minigame 3")
-        self.btn_4 = MainMenuButton(game.py_screen, "Minigame 4")
-        self.btn_5 = MainMenuButton(game.py_screen, "Minigame 5")
-        self.btn_6 = MainMenuButton(game.py_screen, "Quit")
+        self.title = Label(game.py_screen, "Game Title", [0, 0, 0], 75, "resources/fonts/Carnevalee Freakshow.ttf")
+        self.btn = []
+        self.btn.append(MainMenuButton(game.py_screen, "Start"))
+        self.btn.append(MainMenuButton(game.py_screen, "Options"))
+        self.btn.append(MainMenuButton(game.py_screen, "Quit"))
 
-    def on_events(self, events):
-        for event in events:
-            if event.type == py.MOUSEBUTTONDOWN:
-                if self.btn_1.is_clicked(self.mouse_position):
-                    self.start_minigame_1()
-                elif self.btn_2.is_clicked(self.mouse_position):
-                    self.start_minigame_2()
-                elif self.btn_3.is_clicked(self.mouse_position):
-                    self.start_minigame_3()
-                elif self.btn_4.is_clicked(self.mouse_position):
-                    self.start_minigame_4()
-                elif self.btn_5.is_clicked(self.mouse_position):
-                    self.start_minigame_5()
-                elif self.btn_6.is_clicked(self.mouse_position):
-                    self.game.quit()
+    def handle_mouse_position(self, mouse_position):
+        self.mouse_position = mouse_position
 
-        return
-
-    def on_update(self):
-        return
+    def handle_mouse_input(self, event):
+        pass
 
     def on_render(self):
         self.game.drawer.draw_canvas()
         screen_center_width = self.game.py_screen.get_width() / 2
         title_x = screen_center_width - (self.title.get_width() / 2)
-        button_x = screen_center_width - (self.btn_1.width / 2)
+        button_x = screen_center_width - (self.btn[0].width / 2)
 
         self.title.render(title_x, 80)
-        self.btn_1.render(self.mouse_position, button_x, 180)
-        self.btn_2.render(self.mouse_position, button_x, 260)
-        self.btn_3.render(self.mouse_position, button_x, 340)
-        self.btn_4.render(self.mouse_position, button_x, 420)
-        self.btn_5.render(self.mouse_position, button_x, 500)
-        self.btn_6.render(self.mouse_position, button_x, 600)
+        self.btn[0].render(self.mouse_position, button_x, 180)
+        self.btn[1].render(self.mouse_position, button_x, 260)
+        self.btn[2].render(self.mouse_position, button_x, 600)
         py.display.update()
 
-    def handle_mouse_input(self, mouse):
-        return
-
     def handle_key_input(self, keys):
-        if keys[py.K_1]:
-            self.start_minigame(1)
-
         return
 
-    def handle_mouse_position(self, mouse_position):
-        self.mouse_position = mouse_position
-        return
+    def on_events(self, events):
+        for event in events:
+            if event.type == py.MOUSEBUTTONDOWN:
+                if self.btn[0].is_clicked(self.mouse_position):
+                    self.show_pick_minigame()
+                elif self.btn[1].is_clicked(self.mouse_position):
+                    return
+                elif self.btn[2].is_clicked(self.mouse_position):
+                    self.game.quit()
 
-    def start_minigame(self, number):
-        minigames_dict = {
-            1: self.start_minigame_1,
-            2: self.start_minigame_2,
-            3: self.start_minigame_3,
-            4: self.start_minigame_4,
-            5: self.start_minigame_5,
-        }
-        minigames_dict[number]()
+    def on_update(self):
+        pass
 
-    def start_minigame_1(self):
+    def show_pick_minigame(self):
+        from src.global_screens.pick_minigame import PickMinigame
         self.game.drawer.clear()
-        Minigame_1(self.game)
+        PickMinigame(self.game)
 
-    def start_minigame_2(self):
-        pass
-
-    def start_minigame_3(self):
-        pass
-
-    def start_minigame_4(self):
-        pass
-
-    def start_minigame_5(self):
-        pass
-
-
-class MainMenuButton(Button):
+class MainMenuButton(ImageButton):
     def __init__(self, screen, text):
-        button_color = [144, 144, 144]
-        button_color_hover = [57, 57, 57]
+        button_file = "resources/graphics/button_background.png"
         text_color = [0, 0, 0]
         text_color_hover = [255, 255, 255]
-        text_size = 50
+        text_size = 45
         button_width = 300
         button_height = 70
-        super().__init__(screen, text, button_color, button_color_hover, text_color, text_color_hover, text_size,
+        super().__init__(screen, button_file, text, text_color, text_color_hover, text_size,
                          button_width, button_height)

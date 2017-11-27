@@ -21,14 +21,14 @@ class Button:
             return self.default
 
     def render_text(self):
-        font = py.font.Font(None, self.font_size)
+        font = py.font.Font("resources/fonts/Carnevalee Freakshow.ttf", self.font_size)
         if self.is_hovering:
             return font.render(self.text, True, self.font_color_hover)
         else:
             return font.render(self.text, True, self.font_color)
 
-    def render(self, mouse_position, x, y):
-        self.rect = py.draw.rect(self.screen, self.get_background(), [x, y, self.width, self.height])
+    def render(self, mouse_position, x, y, border=0):
+        self.rect = py.draw.rect(self.screen, self.get_background(), [x, y, self.width, self.height], border)
         text = self.render_text()
         text_rect = text.get_rect(center=self.rect.center)
         self.screen.blit(text, text_rect)

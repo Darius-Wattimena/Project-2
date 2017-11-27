@@ -15,6 +15,8 @@ class Game:
         self.drawer = None
         self.py_screen = None
         self.screen = None
+        self.screen_change = None
+        self.temp_screen = None
         self.clock = py.time.Clock()
 
     def enable_logging(self):
@@ -51,6 +53,9 @@ class Game:
             if self.running:
                 self.screen.on_update()
                 self.screen.on_render()
+            if self.screen_change:
+                self.screen = self.temp_screen
+
 
     def handle_events(self, events):
         for event in events:
@@ -64,4 +69,5 @@ class Game:
         py.quit()
 
     def set_screen(self, screen):
-        self.screen = screen
+        self.screen_change = True
+        self.temp_screen = screen
