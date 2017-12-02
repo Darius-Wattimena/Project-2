@@ -1,12 +1,11 @@
-from ..helper.screen_base import ScreenBase
-from ..helper.game_object import GameObject
-from ..helper.game_object_group import GameObjectGroup
-from .fight import Fight
 import pygame as py
+
+from .fight import Fight
+from ..helper.screen_base import ScreenBase
 
 
 class Minigame_1(ScreenBase):
-    # TODO add help screen here for now just start the fight screen.
+    # TODO add help screen here.
     def __init__(self, game):
         self.game = game
         self.game.set_screen(self)

@@ -1,9 +1,9 @@
-from .image import Image
+from abc import ABCMeta
+
 from .game_object_group import GameObjectGroup
-from abc import ABCMeta, abstractmethod
+
 
 class GameObject:
-
     __metaclass__ = ABCMeta
 
     def __init__(self, object_group: GameObjectGroup, velocity=1, solid=False, rect=None):
@@ -28,23 +28,11 @@ class GameObject:
         self.rect = rect
 
     def distance_to_first_solid_object(self, side):
-        if(side == 1):
+        if side == 1:
             return self.object_group.distance_to_above(self)
-        elif(side == 2):
+        elif side == 2:
             return self.object_group.distance_to_right(self)
-        elif(side == 3):
+        elif side == 3:
             return self.object_group.distance_to_below(self)
         else:
             return self.object_group.distance_to_left(self)
-
-    def on_event(self, events):
-        return
-
-    def on_update(self):
-        """ This will be called by the drawer every frame before the render """
-        return
-
-    @abstractmethod
-    def on_render(self):
-        """ This will be called by the drawer every frame, only use this method to handle rendering to the screen """
-        pass

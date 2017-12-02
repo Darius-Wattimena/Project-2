@@ -10,17 +10,15 @@ from src.helper.game_object_group import GameObjectGroup
 
 class Player(GameObject):
     def __init__(self, object_group: GameObjectGroup, py_screen):
-        self.player_rect = py.Rect([100, 100], [80, 35])
-        self.player_state = PlayerState.IDLE
+        super().__init__(object_group, 1, True, py.Rect([100, 100], [35, 80]))
+        self.health = 100
+        self.state = PlayerState.IDLE
         self.py_screen = py_screen
-        self.velocity = 5
         self.render_counter = 999
-        self.solid = True
-        self.rect = None
+        self.drawing = False
         self.drawer = None
         self.idle_animation = None
         self.walk_animation = None
-        super().__init__(object_group, self.velocity, self.solid, self.rect)
         self.load_player_sprite()
 
     def load_player_sprite(self):
@@ -41,48 +39,70 @@ class Player(GameObject):
         self.walk_animation.add_scope(144, 0)
         self.walk_animation.add_scope(189, 0)
 
-    def on_render(self):
-        return
-
-    def on_player_render(self, drawer):
-        drawing = False
+    def is_rendering(self):
+        self.drawing = False
         self.render_counter += 1
-        if self.player_state == PlayerState.IDLE:
+        if self.state == PlayerState.IDLE:
             if self.render_counter >= 5:
-                drawing = True
-        elif self.player_state == PlayerState.WALKING:
+                self.drawing = True
+        elif self.state == PlayerState.WALKING:
             if self.render_counter >= 4:
-                drawing = True
-        elif self.player_state == PlayerState.WALKING_REVERSE:
+                self.drawing = True
+        elif self.state == PlayerState.WALKING_REVERSE:
             if self.render_counter >= 4:
-                drawing = True
+                self.drawing = True
+        elif self.state == PlayerState.PUNCHING:
+            self.drawing = True
+        return self.drawing
 
+    def on_render(self):
         draw_map = {1: self.idle,
                     2: self.walk,
-                    3: self.walk_r}
+                    3: self.walk_r,
+                    4: self.punch}
 
-        if drawing:
-            drawer.draw_canvas()
-            draw_key = self.player_state.value
-            draw_map[draw_key]()
-            self.render_counter = 0
+        draw_key = self.state.value
+        draw_map[draw_key]()
+        self.render_counter = 0
+
+    def on_hit(self, damage):
+        self.health -= damage
 
     def idle(self):
-        self.idle_animation.on_render(self.player_rect)
+        if self.drawing:
+            self.idle_animation.on_render(self.rect)
+        else:
+            self.idle_animation.on_old_render(self.rect)
 
     def walk(self):
-        self.player_rect.move_ip(4, 0)
-        self.walk_animation.on_render(self.player_rect)
+        distance_gap = self.object_group.distance_to_right(self)
+        if distance_gap >= 4:
+            self.rect.move_ip(4, 0)
+        elif distance_gap >= 1:
+            self.rect.move_ip(distance_gap, 0)
+
+        if self.drawing:
+            self.walk_animation.on_render(self.rect)
+        else:
+            self.walk_animation.on_old_render(self.rect)
 
     def walk_r(self):
-        self.player_rect.move_ip(-4, 0)
-        self.walk_animation.on_render(self.player_rect)
+        self.rect.move_ip(-4, 0)
+        if self.drawing:
+            self.walk_animation.on_render(self.rect)
+        else:
+            self.walk_animation.on_old_render(self.rect)
+
+    def punch(self):
+        punch_rect = py.Rect([self.rect.right, self.rect.top], [35, 35])
+        py.draw.rect(self.py_screen, [100, 0, 100], punch_rect)
 
     def set_player_state(self, state):
-        self.player_state = state
+        self.state = state
 
 
 class PlayerState(IntEnum):
     IDLE = 1
     WALKING = 2
     WALKING_REVERSE = 3
+    PUNCHING = 4
