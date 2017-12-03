@@ -1,4 +1,5 @@
 from enum import IntEnum
+from random import randint
 
 import pygame as py
 
@@ -11,6 +12,8 @@ from src.helper.game_object_group import GameObjectGroup
 class Player(GameObject):
     def __init__(self, object_group: GameObjectGroup, py_screen):
         super().__init__(object_group, 1, True, py.Rect([100, 100], [35, 80]))
+        self.damage_max = 10
+        self.damage_min = 3
         self.health = 100
         self.state = PlayerState.IDLE
         self.py_screen = py_screen
@@ -19,6 +22,10 @@ class Player(GameObject):
         self.drawer = None
         self.idle_animation = None
         self.walk_animation = None
+        self.punching = False
+        self.punch_rect = None
+        self.punch_animation = None
+        self.punch_animation_running = False
         self.load_player_sprite()
 
     def load_player_sprite(self):
@@ -42,7 +49,9 @@ class Player(GameObject):
     def is_rendering(self):
         self.drawing = False
         self.render_counter += 1
-        if self.state == PlayerState.IDLE:
+        if self.punching:
+            self.drawing = True
+        elif self.state == PlayerState.IDLE:
             if self.render_counter >= 5:
                 self.drawing = True
         elif self.state == PlayerState.WALKING:
@@ -51,22 +60,27 @@ class Player(GameObject):
         elif self.state == PlayerState.WALKING_REVERSE:
             if self.render_counter >= 4:
                 self.drawing = True
-        elif self.state == PlayerState.PUNCHING:
-            self.drawing = True
         return self.drawing
 
     def on_render(self):
-        draw_map = {1: self.idle,
-                    2: self.walk,
-                    3: self.walk_r,
-                    4: self.punch}
+        if self.punch_animation_running:
+            # TODO finish punch animation before showing other animations
+            return
+        elif self.punching:
+            self.punch()
+        else:
+            self.punch_rect = None
+            draw_map = {1: self.idle,
+                        2: self.walk,
+                        3: self.walk_r}
+            draw_key = self.state.value
+            draw_map[draw_key]()
+            self.render_counter = 0
 
-        draw_key = self.state.value
-        draw_map[draw_key]()
-        self.render_counter = 0
-
-    def on_hit(self, damage):
+    def on_hit(self, ai):
+        damage = randint(ai.damage_min, ai.damage_min)
         self.health -= damage
+        return self.health
 
     def idle(self):
         if self.drawing:
@@ -94,15 +108,21 @@ class Player(GameObject):
             self.walk_animation.on_old_render(self.rect)
 
     def punch(self):
-        punch_rect = py.Rect([self.rect.right, self.rect.top], [35, 35])
-        py.draw.rect(self.py_screen, [100, 0, 100], punch_rect)
+        # TODO start punch animation
+        self.punch_rect = py.Rect([self.rect.right, self.rect.top], [35, 35])
+        py.draw.rect(self.py_screen, [254, 254, 254], self.punch_rect)
 
     def set_player_state(self, state):
         self.state = state
+
+    def is_hitting_punch(self, ai):
+        if self.punching:
+            self.punching = False
+            return self.punch_rect.colliderect(ai.rect)
+        return False
 
 
 class PlayerState(IntEnum):
     IDLE = 1
     WALKING = 2
     WALKING_REVERSE = 3
-    PUNCHING = 4

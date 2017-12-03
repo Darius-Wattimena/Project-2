@@ -37,7 +37,6 @@ class PickMinigame(ScreenBase):
                     from src.global_screens.main_menu import MainMenu
                     self.game.drawer.clear()
                     MainMenu(self.game)
-
         return
 
     def on_update(self):

@@ -1,7 +1,7 @@
 
 class GameObjectGroup:
 
-    def __init__(self, layer= 1):
+    def __init__(self, layer=1):
         self.objects = []
         self.layer = layer
 
@@ -17,11 +17,11 @@ class GameObjectGroup:
             for game_object in self.objects:
                 if game_object != current_object:
                     if first:
-                        distance = current_object.rect.bottom - game_object.rect.top
+                        distance = current_object.rect.top - game_object.rect.bottom
                         if distance >= 0:
                             closest_distance = distance
                     else:
-                        distance = current_object.rect.bottom - game_object.rect.top
+                        distance = current_object.rect.top - game_object.rect.bottom
                         if 0 <= distance < closest_distance:
                             closest_distance = distance
             return closest_distance

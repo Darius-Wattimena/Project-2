@@ -17,6 +17,10 @@ class Fight(ScreenBase):
         self.first = True
 
     def on_events(self, events):
+        for event in events:
+            if event.type == py.KEYDOWN:
+                if event.key == py.K_j:
+                    self.player.punching = True
         return
 
     def on_render(self):
@@ -24,6 +28,13 @@ class Fight(ScreenBase):
             self.game.drawer.draw_canvas()
             self.player.on_render()
             self.ai.on_render()
+
+            if self.player.is_hitting_punch(self.ai):
+                remaining_health = self.ai.on_hit(self.player)
+                self.game.logger.info("AI Remaining Health = " + str(remaining_health))
+            if self.ai.is_hitting_punch(self.player):
+                remaining_health = self.player.on_hit(self.ai)
+                self.game.logger.info("Player Remaining Health = " + str(remaining_health))
         py.display.update()
 
     def on_update(self):
@@ -40,8 +51,6 @@ class Fight(ScreenBase):
             self.player.set_player_state(PlayerState.WALKING)
         elif keys[py.K_a]:
             self.player.set_player_state(PlayerState.WALKING_REVERSE)
-        elif keys[py.K_j]:
-            self.player.set_player_state(PlayerState.PUNCHING)
         else:
             self.player.set_player_state(PlayerState.IDLE)
 

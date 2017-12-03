@@ -2,6 +2,7 @@
 
 from abc import ABCMeta, abstractmethod
 
+
 class ScreenBase(object):
     """ Abstract minigame base class used for all the minigames """
     __metaclass__ = ABCMeta
@@ -18,7 +19,7 @@ class ScreenBase(object):
 
     @abstractmethod
     def on_render(self):
-        """ Gets called on an event used only to render to the screen """
+        """ Gets called every frame on the end of the game loop """
         pass
 
     @abstractmethod
