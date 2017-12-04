@@ -4,6 +4,8 @@ from src.minigame1.minigame import Minigame_1
 from src.helper.label import Label
 import pygame as py
 
+from src.minigame2.minigame import Minigame_2
+
 
 class PickMinigame(ScreenBase):
     def __init__(self, game):
@@ -13,7 +15,7 @@ class PickMinigame(ScreenBase):
         self.title = Label(game.py_screen, "Select a minigame!", [0, 0, 0], 75, "resources/fonts/Carnevalee Freakshow.ttf")
         self.btn = []
         self.btn.append(PickMinigameButton(game.py_screen, "Barfight!"))
-        self.btn.append(PickMinigameButton(game.py_screen, "Minigame 2"))
+        self.btn.append(PickMinigameButton(game.py_screen, "Whack an indian!"))
         self.btn.append(PickMinigameButton(game.py_screen, "Minigame 3"))
         self.btn.append(PickMinigameButton(game.py_screen, "Minigame 4"))
         self.btn.append(PickMinigameButton(game.py_screen, "Minigame 5"))
@@ -71,7 +73,8 @@ class PickMinigame(ScreenBase):
         Minigame_1(self.game)
 
     def start_minigame_2(self):
-        pass
+        self.game.drawer.clear()
+        Minigame_2(self.game)
 
     def start_minigame_3(self):
         pass
