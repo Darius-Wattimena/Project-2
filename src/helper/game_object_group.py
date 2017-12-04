@@ -15,7 +15,7 @@ class GameObjectGroup:
             first = True
             closest_distance = -1
             for game_object in self.objects:
-                if game_object != current_object:
+                if game_object is not current_object:
                     if first:
                         distance = current_object.rect.top - game_object.rect.bottom
                         if distance >= 0:
@@ -33,7 +33,7 @@ class GameObjectGroup:
             first = True
             closest_distance = -1
             for game_object in self.objects:
-                if game_object != current_object:
+                if game_object is not current_object:
                     if first:
                         distance = game_object.rect.left - current_object.rect.right
                         if distance >= 0:
@@ -51,7 +51,7 @@ class GameObjectGroup:
             first = True
             closest_distance = -1
             for game_object in self.objects:
-                if game_object != current_object:
+                if game_object is not current_object:
                     if first:
                         distance = game_object.rect.top - current_object.rect.bottom
                         if distance >= 0:
@@ -69,13 +69,13 @@ class GameObjectGroup:
             first = True
             closest_distance = -1
             for game_object in self.objects:
-                if game_object != current_object:
+                if game_object is not current_object:
                     if first:
-                        distance = current_object.rect.right - game_object.rect.left
+                        distance = current_object.rect.left - game_object.rect.right
                         if distance >= 0:
                             closest_distance = distance
                     else:
-                        distance = current_object.rect.right - game_object.rect.left
+                        distance = current_object.rect.left - game_object.rect.right
                         if 0 <= distance < closest_distance:
                             closest_distance = distance
             return closest_distance

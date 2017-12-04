@@ -23,6 +23,18 @@ class AI(GameObject):
         self.punch_rect = None
         self.punch_animation = None
         self.punch_animation_running = False
+        self.hit_range = 20
+        self.distance_gap = 0
+
+    def on_update(self):
+        self.distance_gap = self.object_group.distance_to_left(self)
+        hit_gap = self.distance_gap - self.hit_range
+        if hit_gap > 20:
+            self.state = AIState.WALKING
+        elif hit_gap < 20:
+            self.state = AIState.WALKING_REVERSE
+        else:
+            self.state = AIState.IDLE
 
     def is_rendering(self):
         self.drawing = True
@@ -57,23 +69,41 @@ class AI(GameObject):
         py.draw.rect(self.py_screen, [100, 0, 100], idle_rect)
 
     def walk(self):
-        distance_gap = self.object_group.distance_to_left(self)
-        if distance_gap >= 4:
+        distance = self.distance_gap - self.hit_range
+        if distance >= 4 + self.hit_range:
             self.rect.move_ip(-4, 0)
-        elif distance_gap >= 1:
-            self.rect.move_ip(-distance_gap, 0)
+        elif distance >= 1 + self.hit_range:
+            self.rect.move_ip(-(distance - self.hit_range), 0)
 
+        idle_rect = py.Rect([self.rect.x, self.rect.y], [35, 80])
+        py.draw.rect(self.py_screen, [100, 0, 100], idle_rect)
+
+        self.state = AIState.IDLE
+        """
         if self.drawing:
             self.walk_animation.on_render(self.rect)
         else:
             self.walk_animation.on_old_render(self.rect)
+        """
 
     def walk_r(self):
+        distance = self.distance_gap - self.hit_range
+        if distance >= 4 - self.hit_range:
+            self.rect.move_ip(4, 0)
+        elif distance >= 1 - self.hit_range:
+            self.rect.move_ip(distance - self.hit_range, 0)
+
+        idle_rect = py.Rect([self.rect.x, self.rect.y], [35, 80])
+        py.draw.rect(self.py_screen, [100, 0, 100], idle_rect)
+
+        self.state = AIState.IDLE
+        """
         self.rect.move_ip(4, 0)
         if self.drawing:
             self.walk_animation.on_render(self.rect)
         else:
             self.walk_animation.on_old_render(self.rect)
+        """
 
     def punch(self):
         punch_rect = py.Rect([self.rect.right, self.rect.top], [35, 35])

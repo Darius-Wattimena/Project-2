@@ -15,6 +15,7 @@ class Fight(ScreenBase):
         self.player = Player(self.game_object_group, self.game.py_screen)
         self.ai = AI(self.game_object_group, self.game.py_screen)
         self.first = True
+        self.passed_time = 0
 
     def on_events(self, events):
         for event in events:
@@ -38,7 +39,10 @@ class Fight(ScreenBase):
         py.display.update()
 
     def on_update(self):
-        return
+        self.passed_time += self.game.clock.get_time()
+        if self.passed_time > 1000:
+            self.ai.on_update()
+            self.passed_time = 0
 
     def handle_mouse_position(self, mouse_position):
         return
