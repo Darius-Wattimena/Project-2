@@ -17,6 +17,8 @@ class Game:
         self.screen = None
         self.screen_change = None
         self.temp_screen = None
+        self.config = None
+        self.FULLSCREEN = False
         self.clock = py.time.Clock()
 
     def enable_logging(self):
@@ -34,9 +36,10 @@ class Game:
         file_log_handler.setFormatter(formatter)
         stderr_log_handler.setFormatter(formatter)
 
-    def start(self, py_screen):
+    def start(self, py_screen, config):
         """ Start the game. """
         self.py_screen = py_screen
+        self.config = config
         self.drawer = Drawer.Instance()
         self.drawer.set_screen(self.py_screen)
         self.screen = MainMenu(self)

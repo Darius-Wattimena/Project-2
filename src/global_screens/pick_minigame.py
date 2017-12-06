@@ -37,9 +37,7 @@ class PickMinigame(ScreenBase):
                 elif self.btn[4].is_clicked(self.mouse_position):
                     self.start_minigame_5()
                 elif self.btn[5].is_clicked(self.mouse_position):
-                    from src.global_screens.main_menu import MainMenu
-                    self.game.drawer.clear()
-                    MainMenu(self.game)
+                    self.back_to_main_menu()
         return
 
     def on_update(self):
@@ -86,6 +84,11 @@ class PickMinigame(ScreenBase):
     def start_minigame_5(self):
         self.game.drawer.clear()
         Minigame_5(self.game)
+
+    def back_to_main_menu(self):
+        from src.global_screens.main_menu import MainMenu
+        self.game.drawer.clear()
+        MainMenu(self.game)
 
 
 class PickMinigameButton(ImageButton):

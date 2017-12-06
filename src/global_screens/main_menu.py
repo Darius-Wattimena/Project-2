@@ -8,6 +8,7 @@ class MainMenu(ScreenBase):
     def __init__(self, game):
         self.game = game
         self.game.set_screen(self)
+        self.mouse_position = None
         game.drawer.add_background_image("resources/graphics/main_menu_background.png")
         self.title = Label(game.py_screen, "Game Title", [0, 0, 0], 75, "resources/fonts/Carnevalee Freakshow.ttf")
         self.btn = []
@@ -42,7 +43,7 @@ class MainMenu(ScreenBase):
                 if self.btn[0].is_clicked(self.mouse_position):
                     self.show_pick_minigame()
                 elif self.btn[1].is_clicked(self.mouse_position):
-                    return
+                    self.show_options()
                 elif self.btn[2].is_clicked(self.mouse_position):
                     self.game.quit()
 
@@ -53,6 +54,11 @@ class MainMenu(ScreenBase):
         from src.global_screens.pick_minigame import PickMinigame
         self.game.drawer.clear()
         PickMinigame(self.game)
+
+    def show_options(self):
+        from src.global_screens.options import Options
+        self.game.drawer.clear()
+        Options(self.game)
 
 class MainMenuButton(ImageButton):
     def __init__(self, screen, text):
