@@ -26,6 +26,7 @@ class Player(GameObject):
         self.punch_rect = None
         self.punch_animation = None
         self.punch_animation_running = False
+        self.blocking = False
         self.load_player_sprite()
 
     def load_player_sprite(self):
@@ -65,7 +66,11 @@ class Player(GameObject):
     def on_render(self):
         if self.punch_animation_running:
             # TODO finish punch animation before showing other animations
-            return
+            if self.counter == 20:  # Replace with check if animation is showing last frame else keep showing the punch animation
+                self.punch_animation_running = False
+            else:
+                self.idle()
+                self.counter += 1
         elif self.punching:
             self.punch()
         else:
@@ -78,9 +83,15 @@ class Player(GameObject):
             self.render_counter = 0
 
     def on_hit(self, ai):
-        damage = randint(ai.damage_min, ai.damage_min)
-        self.health -= damage
-        return self.health
+        if self.blocking:
+            return self.health
+        else:
+            damage = randint(ai.damage_min, ai.damage_max)
+            if self.health < damage:
+                self.health = 0
+            else:
+                self.health -= damage
+            return self.health
 
     def idle(self):
         if self.drawing:
@@ -111,6 +122,8 @@ class Player(GameObject):
         # TODO start punch animation
         self.punch_rect = py.Rect([self.rect.right, self.rect.top], [35, 35])
         py.draw.rect(self.py_screen, [254, 254, 254], self.punch_rect)
+        self.punch_animation_running = True
+        self.counter = 0
 
     def set_player_state(self, state):
         self.state = state

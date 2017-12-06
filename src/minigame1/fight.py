@@ -1,3 +1,4 @@
+from src.helper.label import Label
 from src.helper.screen_base import ScreenBase
 from src.helper.game_object_group import GameObjectGroup
 from src.minigame1.ai import AI
@@ -16,6 +17,8 @@ class Fight(ScreenBase):
         self.ai = AI(self.game_object_group, self.game.py_screen)
         self.first = True
         self.passed_time = 0
+        self.player_health_label = Label(self.game.py_screen, "Player Health: " + str(self.player.health), [254, 254, 254], 50)
+        self.ai_health_label = Label(self.game.py_screen, "AI Health: " + str(self.ai.health), [254, 254, 254], 50)
 
     def on_events(self, events):
         for event in events:
@@ -32,10 +35,13 @@ class Fight(ScreenBase):
 
             if self.player.is_hitting_punch(self.ai):
                 remaining_health = self.ai.on_hit(self.player)
-                self.game.logger.info("AI Remaining Health = " + str(remaining_health))
+                self.ai_health_label.text = "AI Health: " + str(remaining_health)
             if self.ai.is_hitting_punch(self.player):
                 remaining_health = self.player.on_hit(self.ai)
-                self.game.logger.info("Player Remaining Health = " + str(remaining_health))
+                self.player_health_label.text = "Player Health: " + str(remaining_health)
+
+            self.player_health_label.render(100, 400)
+            self.ai_health_label.render(500, 400)
         py.display.update()
 
     def on_update(self):

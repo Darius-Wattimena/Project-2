@@ -23,18 +23,27 @@ class AI(GameObject):
         self.punch_rect = None
         self.punch_animation = None
         self.punch_animation_running = False
+        self.blocking = False
         self.hit_range = 20
         self.distance_gap = 0
 
     def on_update(self):
+        self.blocking = False
         self.distance_gap = self.object_group.distance_to_left(self)
         hit_gap = self.distance_gap - self.hit_range
-        if hit_gap > 20:
-            self.state = AIState.WALKING
-        elif hit_gap < 20:
-            self.state = AIState.WALKING_REVERSE
+
+        behaviour = randint(1, 100)
+        if behaviour < 30:
+            self.state = AIState.BLOCKING
+        elif behaviour < 60:
+            if hit_gap > 20:
+                self.state = AIState.WALKING
+            elif hit_gap < 20:
+                self.state = AIState.WALKING_REVERSE
+            else:
+                self.state = AIState.IDLE
         else:
-            self.state = AIState.IDLE
+            self.punching = True
 
     def is_rendering(self):
         self.drawing = True
@@ -45,18 +54,29 @@ class AI(GameObject):
         return False
 
     def on_render(self):
-        draw_map = {1: self.idle,
-                    2: self.walk,
-                    3: self.walk_r}
+        if self.punching:
+            self.punch()
+        else:
+            self.punch_rect = None
+            draw_map = {1: self.idle,
+                        2: self.walk,
+                        3: self.walk_r,
+                        4: self.block}
 
-        draw_key = self.state.value
-        draw_map[draw_key]()
-        self.render_counter = 0
+            draw_key = self.state.value
+            draw_map[draw_key]()
+            self.render_counter = 0
 
     def on_hit(self, player):
-        damage = randint(player.damage_min, player.damage_max)
-        self.health -= damage
-        return self.health
+        if self.blocking:
+            return self.health
+        else:
+            damage = randint(player.damage_min, player.damage_max)
+            if self.health < damage:
+                self.health = 0
+            else:
+                self.health -= damage
+            return self.health
 
     def idle(self):
         """
@@ -106,8 +126,15 @@ class AI(GameObject):
         """
 
     def punch(self):
-        punch_rect = py.Rect([self.rect.right, self.rect.top], [35, 35])
-        py.draw.rect(self.py_screen, [100, 0, 100], punch_rect)
+        idle_rect = py.Rect([self.rect.x, self.rect.y], [35, 80])
+        py.draw.rect(self.py_screen, [100, 0, 100], idle_rect)
+        self.punch_rect = py.Rect([self.rect.left - 35, self.rect.top], [35, 35])
+        py.draw.rect(self.py_screen, [100, 0, 100], self.punch_rect)
+
+    def block(self):
+        self.blocking = True
+        idle_rect = py.Rect([self.rect.x, self.rect.y], [35, 80])
+        py.draw.rect(self.py_screen, [100, 0, 100], idle_rect)
 
     def is_hitting_punch(self, player):
         if self.punching:
@@ -120,3 +147,4 @@ class AIState(IntEnum):
     IDLE = 1
     WALKING = 2
     WALKING_REVERSE = 3
+    BLOCKING = 4
