@@ -69,7 +69,12 @@ class Player(GameObject):
             if self.counter == 20:  # Replace with check if animation is showing last frame else keep showing the punch animation
                 self.punch_animation_running = False
             else:
-                self.idle()
+                self.drawing = False
+                self.render_counter += 1
+                if self.render_counter >= 5:
+                    self.drawing = True
+                    self.idle()
+                    self.render_counter = 0
                 self.counter += 1
         elif self.punching:
             self.punch()
