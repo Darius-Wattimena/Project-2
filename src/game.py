@@ -59,7 +59,6 @@ class Game:
             if self.screen_change:
                 self.screen = self.temp_screen
 
-
     def handle_events(self, events):
         for event in events:
             if event.type == py.QUIT:

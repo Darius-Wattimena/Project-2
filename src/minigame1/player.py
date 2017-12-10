@@ -10,7 +10,7 @@ from src.helper.game_object_group import GameObjectGroup
 
 
 class Player(GameObject):
-    def __init__(self, object_group: GameObjectGroup, py_screen):
+    def __init__(self, object_group: GameObjectGroup, py_screen, fight_class):
         super().__init__(object_group, 1, True, py.Rect([100, 100], [35, 80]))
         self.damage_max = 10
         self.damage_min = 3
@@ -27,6 +27,8 @@ class Player(GameObject):
         self.punch_animation = None
         self.punch_animation_running = False
         self.blocking = False
+        self.won_fight = None
+        self.fight_class = fight_class
         self.load_player_sprite()
 
     def load_player_sprite(self):
@@ -50,7 +52,7 @@ class Player(GameObject):
     def is_rendering(self):
         self.drawing = False
         self.render_counter += 1
-        if self.punching:
+        if self.state == PlayerState.BLOCKING or self.punching:
             self.drawing = True
         elif self.state == PlayerState.IDLE:
             if self.render_counter >= 5:
@@ -66,7 +68,7 @@ class Player(GameObject):
     def on_render(self):
         if self.punch_animation_running:
             # TODO finish punch animation before showing other animations
-            if self.counter == 20:  # Replace with check if animation is showing last frame else keep showing the punch animation
+            if self.counter == 3:  # Replace with check if animation is showing last frame else keep showing the punch animation
                 self.punch_animation_running = False
             else:
                 self.drawing = False
@@ -82,7 +84,8 @@ class Player(GameObject):
             self.punch_rect = None
             draw_map = {1: self.idle,
                         2: self.walk,
-                        3: self.walk_r}
+                        3: self.walk_r,
+                        4: self.block}
             draw_key = self.state.value
             draw_map[draw_key]()
             self.render_counter = 0
@@ -94,6 +97,7 @@ class Player(GameObject):
             damage = randint(ai.damage_min, ai.damage_max)
             if self.health < damage:
                 self.health = 0
+                self.fight_class.ai_won()
             else:
                 self.health -= damage
             return self.health
@@ -130,7 +134,12 @@ class Player(GameObject):
         self.punch_animation_running = True
         self.counter = 0
 
-    def set_player_state(self, state):
+    def block(self):
+        self.blocking = True
+        rect = py.Rect([self.rect.x, self.rect.y], [35, 80])
+        py.draw.rect(self.py_screen, [254, 254, 254], rect)
+
+    def set_state(self, state):
         self.state = state
 
     def is_hitting_punch(self, ai):
@@ -144,3 +153,4 @@ class PlayerState(IntEnum):
     IDLE = 1
     WALKING = 2
     WALKING_REVERSE = 3
+    BLOCKING = 4
