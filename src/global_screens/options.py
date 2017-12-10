@@ -20,6 +20,9 @@ class Options(ScreenBase):
         self.full_screen_checkbox = CheckBox(game.py_screen, [0, 0, 0], 50, self.game.FULLSCREEN, 2, [254, 0, 0])
         self.volume_label = OptionsLabel(game.py_screen, "Volume :", 50)
         self.language_label = OptionsLabel(game.py_screen, "Language :", 50)
+        self.panel_background = py.image.load("resources/graphics/panel_background.png")
+        self.panel_background = py.transform.scale(self.panel_background, (700, 500))
+        self.panel_rect = self.panel_background.get_rect()
 
     def handle_key_input(self, keys):
         pass
@@ -45,6 +48,7 @@ class Options(ScreenBase):
         button_x = screen_center_width - (self.btn[0].width / 2)
         options_label_right = screen_center_width - 70
 
+        self.render_panel()
         self.title.render(title_x, 80)
         self.resolution_label.render(y=180, right=options_label_right)
         self.full_screen_label.render(y=260, right=options_label_right)
@@ -53,6 +57,12 @@ class Options(ScreenBase):
         self.language_label.render(y=420, right=options_label_right)
         self.btn[0].render(self.mouse_position, button_x, 600)
         py.display.update()
+
+    def render_panel(self):
+        self.panel_rect.y = 60
+        self.panel_rect.centerx = (self.game.py_screen.get_width() / 2)
+
+        self.game.py_screen.blit(self.panel_background, self.panel_rect)
 
     def on_update(self):
         pass

@@ -16,6 +16,10 @@ class Drawer():
     def set_screen(self, screen):
         self.screen = screen
 
+    def add_loaded_image(self, image, rect):
+        image = Image(image, rect)
+        self.items.append(image)
+
     def add_image(self, name):
         """ Add a new image to the items list """
         data = self.load_image(name)
