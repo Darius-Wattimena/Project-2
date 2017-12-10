@@ -13,22 +13,35 @@ class Fight(ScreenBase):
         self.game_object_group = GameObjectGroup()
         self.game.drawer.clear()
         self.game.drawer.add_image("resources/graphics/minigame_1/background.png")
-        self.player = Player(self.game_object_group, self.game.py_screen)
-        self.ai = AI(self.game_object_group, self.game.py_screen)
+        self.player = Player(self.game_object_group, self.game.py_screen, self)
+        self.ai = AI(self.game_object_group, self.game.py_screen, self)
         self.first = True
         self.passed_time = 0
         self.player_health_label = Label(self.game.py_screen, "Player Health: " + str(self.player.health), [254, 254, 254], 50)
         self.ai_health_label = Label(self.game.py_screen, "AI Health: " + str(self.ai.health), [254, 254, 254], 50)
+        self.winner_label = Label(self.game.py_screen, "", [254, 254, 254], 100)
+        self.fight_paused = False
+
+    def player_won(self):
+        self.player.won_fight = True
+        self.fight_paused = True
+        self.winner_label.text = "Player Won!!"
+
+    def ai_won(self):
+        self.player.won_fight = False
+        self.fight_paused = True
+        self.winner_label.text = "AI Won!!"
 
     def on_events(self, events):
         for event in events:
             if event.type == py.KEYDOWN:
-                if event.key == py.K_j:
-                    self.player.punching = True
+                if not self.player.punch_animation_running:
+                    if event.key == py.K_j:
+                        self.player.punching = True
         return
 
     def on_render(self):
-        if self.player.is_rendering() or self.ai.is_rendering():
+        if not self.fight_paused and (self.player.is_rendering() or self.ai.is_rendering()):
             self.game.drawer.draw_canvas()
             self.player.on_render()
             self.ai.on_render()
@@ -42,13 +55,21 @@ class Fight(ScreenBase):
 
             self.player_health_label.render(100, 400)
             self.ai_health_label.render(500, 400)
+        else:
+            if self.player.won_fight is not None:
+                x = (self.game.py_screen.get_width() / 2) - (self.winner_label.get_width() / 2)
+                y = (self.game.py_screen.get_height() / 2) - 100
+                self.winner_label.render(x, y)
         py.display.update()
 
     def on_update(self):
-        self.passed_time += self.game.clock.get_time()
-        if self.passed_time > 1000:
-            self.ai.on_update()
-            self.passed_time = 0
+        if self.player.won_fight is not None:
+            self.fight_paused = True
+        else:
+            self.passed_time += self.game.clock.get_time()
+            if self.passed_time > 500:
+                self.ai.on_update(self.player.state == PlayerState.BLOCKING)
+                self.passed_time = 0
 
     def handle_mouse_position(self, mouse_position):
         return
@@ -57,11 +78,15 @@ class Fight(ScreenBase):
         return
 
     def handle_key_input(self, keys):
-        if keys[py.K_d]:
-            self.player.set_player_state(PlayerState.WALKING)
-        elif keys[py.K_a]:
-            self.player.set_player_state(PlayerState.WALKING_REVERSE)
-        else:
-            self.player.set_player_state(PlayerState.IDLE)
+        if not self.fight_paused:
+            self.player.blocking = False
+            if keys[py.K_k] and not self.player.punch_animation_running:
+                self.player.set_state(PlayerState.BLOCKING)
+            elif keys[py.K_d]:
+                self.player.set_state(PlayerState.WALKING)
+            elif keys[py.K_a]:
+                self.player.set_state(PlayerState.WALKING_REVERSE)
+            else:
+                self.player.set_state(PlayerState.IDLE)
 
         return

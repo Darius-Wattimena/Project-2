@@ -16,7 +16,7 @@ class Label:
         self.screen.blit(text, text_rect)
 
     def get_width(self):
-        font = py.font.Font(None, self.size)
+        font = py.font.Font(self.font, self.size)
         text = font.render(self.text, True, self.color)
         text_rect = text.get_rect()
         return text_rect.width

@@ -8,7 +8,7 @@ from src.helper.game_object_group import GameObjectGroup
 
 
 class AI(GameObject):
-    def __init__(self, object_group: GameObjectGroup, py_screen):
+    def __init__(self, object_group: GameObjectGroup, py_screen, fight_class):
         super().__init__(object_group, 1, True, py.Rect([200, 100], [35, 80]))
         self.damage_max = 10
         self.damage_min = 3
@@ -26,24 +26,34 @@ class AI(GameObject):
         self.blocking = False
         self.hit_range = 20
         self.distance_gap = 0
+        self.fight_class = fight_class
 
-    def on_update(self):
+    def on_update(self, player_blocking):
         self.blocking = False
         self.distance_gap = self.object_group.distance_to_left(self)
         hit_gap = self.distance_gap - self.hit_range
 
         behaviour = randint(1, 100)
-        if behaviour < 30:
-            self.state = AIState.BLOCKING
-        elif behaviour < 60:
-            if hit_gap > 20:
-                self.state = AIState.WALKING
-            elif hit_gap < 20:
-                self.state = AIState.WALKING_REVERSE
+
+        if player_blocking:
+            if behaviour < 30:
+                self.state = AIState.BLOCKING
             else:
-                self.state = AIState.IDLE
+                if hit_gap > 20:
+                    self.state = AIState.WALKING
+                elif hit_gap < 20:
+                    self.state = AIState.WALKING_REVERSE
+                else:
+                    self.state = AIState.IDLE
+        elif hit_gap < 20:
+            if behaviour < 75:
+                self.punching = True
+            else:
+                self.state = AIState.WALKING_REVERSE
+        elif hit_gap > 20:
+            self.state = AIState.WALKING
         else:
-            self.punching = True
+            self.state = AIState.IDLE
 
     def is_rendering(self):
         self.drawing = True
@@ -55,6 +65,8 @@ class AI(GameObject):
 
     def on_render(self):
         if self.punching:
+            self.state = AIState.IDLE
+            self.blocking = False
             self.punch()
         else:
             self.punch_rect = None
@@ -74,6 +86,7 @@ class AI(GameObject):
             damage = randint(player.damage_min, player.damage_max)
             if self.health < damage:
                 self.health = 0
+                self.fight_class.player_won()
             else:
                 self.health -= damage
             return self.health
@@ -134,7 +147,7 @@ class AI(GameObject):
     def block(self):
         self.blocking = True
         idle_rect = py.Rect([self.rect.x, self.rect.y], [35, 80])
-        py.draw.rect(self.py_screen, [100, 0, 100], idle_rect)
+        py.draw.rect(self.py_screen, [254, 254, 254], idle_rect)
 
     def is_hitting_punch(self, player):
         if self.punching:
