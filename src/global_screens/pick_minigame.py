@@ -2,6 +2,7 @@ from src.helper.image_button import ImageButton
 from src.helper.screen_base import ScreenBase
 from src.minigame1.minigame import Minigame_1
 from src.minigame2.minigame import Minigame_2
+from src.minigame3.minigame import Minigame_3
 from src.minigame4.minigame import Minigame_4
 from src.minigame5.minigame import Minigame_5
 from src.helper.label import Label
@@ -17,7 +18,7 @@ class PickMinigame(ScreenBase):
         self.btn = []
         self.btn.append(PickMinigameButton(game.py_screen, "Barfight!"))
         self.btn.append(PickMinigameButton(game.py_screen, "Whack an indian!"))
-        self.btn.append(PickMinigameButton(game.py_screen, "Minigame 3"))
+        self.btn.append(PickMinigameButton(game.py_screen, "Dodge Course!"))
         self.btn.append(PickMinigameButton(game.py_screen, "Horse Racing"))
         self.btn.append(PickMinigameButton(game.py_screen, "Shooting range"))
         self.btn.append(PickMinigameButton(game.py_screen, "Back"))
@@ -76,7 +77,8 @@ class PickMinigame(ScreenBase):
         Minigame_2(self.game)
 
     def start_minigame_3(self):
-        pass
+        self.game.drawer.clear()
+        Minigame_3(self.game)
 
     def start_minigame_4(self):
         self.game.drawer.clear()
