@@ -2,6 +2,7 @@ from src.helper.label import Label
 from src.helper.screen_base import ScreenBase
 from src.helper.game_object_group import GameObjectGroup
 from src.minigame1.ai import AI
+from src.minigame1.custom_event import AIEvent
 from .player import Player, PlayerState
 import pygame as py
 
@@ -21,6 +22,8 @@ class Fight(ScreenBase):
         self.ai_health_label = Label(self.game.py_screen, "AI Health: " + str(self.ai.health), [254, 254, 254], 50)
         self.winner_label = Label(self.game.py_screen, "", [254, 254, 254], 100)
         self.fight_paused = False
+        self.ai_event = AIEvent(self.ai, self.player)
+        py.time.set_timer(self.ai_event.type, 500)
 
     def player_won(self):
         self.player.won_fight = True
@@ -38,6 +41,8 @@ class Fight(ScreenBase):
                 if not self.player.punch_animation_running:
                     if event.key == py.K_j:
                         self.player.punching = True
+            elif event.type == self.ai_event.type:
+                self.ai_event.execute()
         return
 
     def on_render(self):
@@ -68,7 +73,7 @@ class Fight(ScreenBase):
         else:
             self.passed_time += self.game.clock.get_time()
             if self.passed_time > 500:
-                self.ai.on_update(self.player.state == PlayerState.BLOCKING)
+                # self.ai.on_update(self.player.state == PlayerState.BLOCKING)
                 self.passed_time = 0
 
     def handle_mouse_position(self, mouse_position):
