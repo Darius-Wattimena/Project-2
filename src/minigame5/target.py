@@ -8,7 +8,7 @@ class Target:
     def get_location(self):
         random_number = randint(1, 22)
 
-        location_map = {
+        location_map = [
             [30, 250],
             [130, 250],
             [180, 250],
@@ -31,7 +31,7 @@ class Target:
             [910, 380],
             [990, 415],
             [1165, 490]
-        }
+        ]
 
         random_index = random_number - 1
         return location_map[random_index]

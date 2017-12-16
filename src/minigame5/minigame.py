@@ -31,8 +31,8 @@ class Minigame_5(ScreenBase):
         # Defines TARGET, based on target.py
         self.target_img = py.image.load("resources/graphics/minigame_5/target.png")
         self.target = Target()
-        self.spawn_location = self.target.get_location()
-        self.target_rect = py.Rect(self.spawn_location, [45, 90])
+        self.selected_location = self.target.get_location()
+        self.target_rect = py.Rect(self.selected_location, [45, 70])
         py.draw.rect(self.game.py_screen, [0, 0, 0], self.target_rect)
 
         # Defines CROSSHAIR
@@ -81,7 +81,7 @@ class Minigame_5(ScreenBase):
                 py.time.set_timer(self.reload_event, 0)
             elif event.type == self.spawn_event:
                 self.showing_target = True
-                self.selected_location = self.target.get_location(self)
+                self.selected_location = self.target.get_location()
                 self.target_rect.x = self.selected_location[0]
                 self.target_rect.y = self.selected_location[1]
                 py.time.set_timer(self.spawn_event, self.spawn_time)
@@ -101,6 +101,7 @@ class Minigame_5(ScreenBase):
 
     def on_render(self):
         self.game.drawer.draw_canvas()
+        print(self.selected_location)
 
         # Time Tracker
         self.check_time = time.time()
