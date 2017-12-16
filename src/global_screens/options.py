@@ -20,8 +20,7 @@ class Options(ScreenBase):
         self.full_screen_checkbox = CheckBox(game.py_screen, [0, 0, 0], 50, self.game.FULLSCREEN, 2, [254, 0, 0])
         self.volume_label = OptionsLabel(game.py_screen, "Volume :", 50)
         self.language_label = OptionsLabel(game.py_screen, "Language :", 50)
-        self.panel_background = py.image.load("resources/graphics/panel_background.png")
-        self.panel_background = py.transform.scale(self.panel_background, (700, 500))
+        self.panel_background = py.image.load("resources/graphics/menu_background_v3.png")
         self.panel_rect = self.panel_background.get_rect()
 
     def handle_key_input(self, keys):
@@ -87,7 +86,7 @@ class Options(ScreenBase):
 
 class OptionsButton(ImageButton):
     def __init__(self, screen, text):
-        button_file = "resources/graphics/button_background.png"
+        button_file = "resources/graphics/button_background_v3.png"
         text_color = [0, 0, 0]
         text_color_hover = [255, 255, 255]
         text_size = 45

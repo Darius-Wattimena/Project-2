@@ -1,8 +1,10 @@
-import pygame as py
 import time
+
+import pygame as py
+
+from .target import Target
 from ..helper.screen_base import ScreenBase
-from .Target import Target
-from random import *
+
 
 class Minigame_5(ScreenBase):
     def __init__(self, game):
@@ -26,10 +28,11 @@ class Minigame_5(ScreenBase):
         self.gun_rect = py.Rect(468, 560, 50, 50)
         py.draw.rect(self.game.py_screen, [0, 0, 0], self.gun_rect)
 
-        # Defines TARGET, based on Target.py
+        # Defines TARGET, based on target.py
         self.target_img = py.image.load("resources/graphics/minigame_5/target.png")
-        self.spawn_location = Target.random_location(self)
-        self.target_rect = py.Rect(self.spawn_location, [45, 90])
+        self.target = Target()
+        self.selected_location = self.target.get_location()
+        self.target_rect = py.Rect(self.selected_location, [45, 70])
         py.draw.rect(self.game.py_screen, [0, 0, 0], self.target_rect)
 
         # Defines CROSSHAIR
@@ -78,7 +81,7 @@ class Minigame_5(ScreenBase):
                 py.time.set_timer(self.reload_event, 0)
             elif event.type == self.spawn_event:
                 self.showing_target = True
-                self.selected_location = Target.random_location(self)
+                self.selected_location = self.target.get_location()
                 self.target_rect.x = self.selected_location[0]
                 self.target_rect.y = self.selected_location[1]
                 py.time.set_timer(self.spawn_event, self.spawn_time)
@@ -98,6 +101,7 @@ class Minigame_5(ScreenBase):
 
     def on_render(self):
         self.game.drawer.draw_canvas()
+        print(self.selected_location)
 
         # Time Tracker
         self.check_time = time.time()
@@ -191,16 +195,21 @@ class Minigame_5(ScreenBase):
         return
 
     def handle_key_input(self, keys):
-        if keys[py.K_w]:
+        if keys[py.K_w] and keys[py.K_s]:
+            pass
+        elif keys[py.K_w]:
             self.crosshair_rect.move_ip(0, -self.crosshair_speed)
+        elif keys[py.K_s]:
+                self.crosshair_rect.move_ip(0, +self.crosshair_speed)
+
+        if keys[py.K_a] and keys[py.K_d]:
+            pass
         elif keys[py.K_a]:
             self.crosshair_rect.move_ip(-self.crosshair_speed, 0)
-        elif keys[py.K_s]:
-            self.crosshair_rect.move_ip(0, +self.crosshair_speed)
         elif keys[py.K_d]:
             self.crosshair_rect.move_ip(+self.crosshair_speed, 0)
 
-        elif keys[py.K_SPACE]:
+        if keys[py.K_SPACE]:
             if self.reloaded_gun:
                 if self.collidecheck:
                     self.reloaded_gun = False
