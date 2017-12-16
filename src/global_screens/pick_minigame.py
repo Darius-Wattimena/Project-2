@@ -94,11 +94,11 @@ class PickMinigame(ScreenBase):
 
 class PickMinigameButton(ImageButton):
     def __init__(self, screen, text):
-        button_file = "resources/graphics/button_background.png"
+        button_file = "resources/graphics/button_background_v3.png"
         text_color = [0, 0, 0]
         text_color_hover = [255, 255, 255]
         text_size = 50
-        button_width = 300
+        button_width = 350
         button_height = 70
         super().__init__(screen, button_file, text, text_color, text_color_hover, text_size,
                          button_width, button_height)
