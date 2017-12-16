@@ -25,16 +25,6 @@ class Fight(ScreenBase):
         self.ai_event = AIEvent(self.ai, self.player)
         py.time.set_timer(self.ai_event.type, 500)
 
-    def player_won(self):
-        self.player.won_fight = True
-        self.fight_paused = True
-        self.winner_label.text = "Player Won!!"
-
-    def ai_won(self):
-        self.player.won_fight = False
-        self.fight_paused = True
-        self.winner_label.text = "AI Won!!"
-
     def on_events(self, events):
         for event in events:
             if event.type == py.KEYDOWN:
@@ -43,6 +33,8 @@ class Fight(ScreenBase):
                         self.player.punching = True
             elif event.type == self.ai_event.type:
                 self.ai_event.execute()
+            elif event.type == py.USEREVENT + 2:
+                event.instance.execute(self)
         return
 
     def on_render(self):
