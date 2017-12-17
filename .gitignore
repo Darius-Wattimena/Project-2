@@ -102,3 +102,6 @@ ENV/
 
 #visual code
 .vscode
+
+# PyCharm
+.idea
