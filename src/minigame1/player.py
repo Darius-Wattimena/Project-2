@@ -15,7 +15,7 @@ class Player(GameObject):
         super().__init__(object_group, 1, True, py.Rect([100, 100], [35, 80]))
         self.damage_max = 10
         self.damage_min = 3
-        self.health = 10
+        self.health = 100
         self.state = PlayerState.IDLE
         self.py_screen = py_screen
         self.render_counter = 999
