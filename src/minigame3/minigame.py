@@ -27,10 +27,13 @@ class Minigame_3(ScreenBase):
         self.time_between_movement = 5
         py.time.set_timer(self.move_event, self.time_between_spawn)
 
+        self.collide_event = py.USEREVENT + 3
+
     def player(self):
         self.loadchar = py.image.load("resources/graphics/minigame_3/testimage.png")
         self.char_rect = self.loadchar.get_rect()
         self.player_rect = py.Rect([640, 650], [100, 100])
+        self.lives = 0
 
     def on_events(self, events):
         for event in events:
@@ -44,6 +47,13 @@ class Minigame_3(ScreenBase):
                 self.enemy_is_moving = True
                 self.enemy_rect.move_ip(0, 2)
                 py.time.set_timer(self.move_event, self.time_between_movement)
+            if event.type == self.collide_event:
+                if self.enemy_rect.colliderect(self.player_rect):
+                    if self.lives > 1:
+                        self.lives -= 1
+                    elif self.lives == 1:
+                        py.quit()
+                        quit()
 
     def on_update(self):
         return
