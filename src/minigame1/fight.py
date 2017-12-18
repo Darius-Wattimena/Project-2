@@ -32,18 +32,23 @@ class Fight(ScreenBase):
                 if not self.player.punch_animation_running:
                     if event.key == py.K_j:
                         self.player.punching = True
+                    elif event.key == py.K_ESCAPE:
+                        self.handle_escape()
                 elif event.key == py.K_ESCAPE:
-                    if self.winner_label is not None:
-                        from src.global_screens.pick_minigame import PickMinigame
-                        self.game.drawer.clear()
-                        PickMinigame(self.game)
-                    else:
-                        self.fight_paused = not self.fight_paused
+                    self.handle_escape()
             elif event.type == self.ai_event.type:
                 self.ai_event.execute()
             elif event.type == py.USEREVENT + 2:
                 event.instance.execute(self)
         return
+
+    def handle_escape(self):
+        if self.winner_label.text != "":
+            from src.global_screens.pick_minigame import PickMinigame
+            self.game.drawer.clear()
+            PickMinigame(self.game)
+        else:
+            self.fight_paused = not self.fight_paused
 
     def on_render(self):
         if not self.fight_paused and (self.player.is_rendering() or self.ai.is_rendering()):
