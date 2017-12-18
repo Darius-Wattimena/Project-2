@@ -7,6 +7,7 @@ from src.helper.animation import Animation
 from src.helper.drawer import Drawer
 from src.helper.game_object import GameObject
 from src.helper.game_object_group import GameObjectGroup
+from src.minigame1.custom_event import FightDoneEvent
 
 
 class Player(GameObject):
@@ -97,7 +98,7 @@ class Player(GameObject):
             damage = randint(ai.damage_min, ai.damage_max)
             if self.health < damage:
                 self.health = 0
-                self.fight_class.ai_won()
+                py.event.post(FightDoneEvent(self).get_event())
             else:
                 self.health -= damage
             return self.health
