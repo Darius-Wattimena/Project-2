@@ -32,8 +32,13 @@ class Minigame_5(ScreenBase):
         self.target_img = py.image.load("resources/graphics/minigame_5/target.png")
         self.target = Target()
         self.selected_location = self.target.get_location()
-        self.target_rect = py.Rect(self.selected_location, [45, 70])
+        self.selected_location2 = self.target.get_location()
+        self.target_rect = py.Rect((self.selected_location[0], self.selected_location[1]),
+                                   (self.selected_location[2], self.selected_location[3]))
+        self.target_rect2 = py.Rect((self.selected_location2[0], self.selected_location2[1]),
+                                    (self.selected_location2[2], self.selected_location2[3]))
         py.draw.rect(self.game.py_screen, [0, 0, 0], self.target_rect)
+        py.draw.rect(self.game.py_screen, [0, 0, 0], self.target_rect2)
 
         # Defines CROSSHAIR
         self.crosshair_img = py.image.load("resources/graphics/minigame_5/crosshair_white_red_40p.png")
@@ -47,6 +52,7 @@ class Minigame_5(ScreenBase):
         self.spawn_event = py.USEREVENT + 1
         self.spawn_time = 3000
         self.showing_target = True
+        self.showing_target2 = True
         py.time.set_timer(self.spawn_event, self.spawn_time)
 
         self.reload_event = py.USEREVENT + 2
@@ -57,6 +63,7 @@ class Minigame_5(ScreenBase):
         self.time_till_shot_disappear = 60
         self.gun_shot_succes = False
         self.gun_direction = 0
+        py.mixer.music.load("resources/graphics/minigame_5/gun-gunshot-02.mp3")
 
         self.gun_status_event = py.USEREVENT + 4
         self.time_till_gun_status_text_disappears = 1000
@@ -81,9 +88,13 @@ class Minigame_5(ScreenBase):
                 py.time.set_timer(self.reload_event, 0)
             elif event.type == self.spawn_event:
                 self.showing_target = True
+                self.showing_target2 = True
                 self.selected_location = self.target.get_location()
+                self.selected_location2 = self.target.get_location()
                 self.target_rect.x = self.selected_location[0]
                 self.target_rect.y = self.selected_location[1]
+                self.target_rect2.x = self.selected_location2[0]
+                self.target_rect2.y = self.selected_location2[1]
                 py.time.set_timer(self.spawn_event, self.spawn_time)
             elif event.type == self.gun_shot_disappear_event:
                 self.gun_shot_succes = False
@@ -101,7 +112,6 @@ class Minigame_5(ScreenBase):
 
     def on_render(self):
         self.game.drawer.draw_canvas()
-        print(self.selected_location)
 
         # Time Tracker
         self.check_time = time.time()
@@ -115,6 +125,10 @@ class Minigame_5(ScreenBase):
         if self.showing_target:
             py.draw.rect(self.game.py_screen, [0, 0, 0], self.target_rect)
             self.game.py_screen.blit(self.target_img, self.target_rect)
+
+        if self.showing_target2:
+            py.draw.rect(self.game.py_screen, [0, 0, 0], self.target_rect2)
+            self.game.py_screen.blit(self.target_img, self.target_rect2)
 
         # Displays BUILDINGS exterior
         self.game.py_screen.blit(self.building_exterior_img, [0, 0])
@@ -182,11 +196,13 @@ class Minigame_5(ScreenBase):
         # Displays CROSSHAIR, clamps it to screen, sets it's collision
         self.crosshair_rect.clamp_ip(self.game.py_screen.get_rect())
         self.collidecheck = self.crosshair_rect.colliderect(self.target_rect)
+        self.collidecheck2 = self.crosshair_rect.colliderect(self.target_rect2)
 
-        if self.collidecheck:
+        if self.collidecheck or self.collidecheck2:
             self.game.py_screen.blit(self.crosshair_collide_img, self.crosshair_rect)
-        elif not self.collidecheck:
+        elif not self.collidecheck or self.collidecheck2:
             self.game.py_screen.blit(self.crosshair_img, self.crosshair_rect)
+
 
         py.display.update()
         return
@@ -200,20 +216,21 @@ class Minigame_5(ScreenBase):
         elif keys[py.K_w]:
             self.crosshair_rect.move_ip(0, -self.crosshair_speed)
         elif keys[py.K_s]:
-                self.crosshair_rect.move_ip(0, +self.crosshair_speed)
+                self.crosshair_rect.move_ip(0, self.crosshair_speed)
 
         if keys[py.K_a] and keys[py.K_d]:
             pass
         elif keys[py.K_a]:
             self.crosshair_rect.move_ip(-self.crosshair_speed, 0)
         elif keys[py.K_d]:
-            self.crosshair_rect.move_ip(+self.crosshair_speed, 0)
+            self.crosshair_rect.move_ip(self.crosshair_speed, 0)
 
         if keys[py.K_SPACE]:
             if self.reloaded_gun:
                 if self.collidecheck:
                     self.reloaded_gun = False
                     self.showing_target = False
+                    py.mixer.music.play()
                     self.gun_status = 1
                     self.gun_shot_succes = True
                     self.gun_status_display = True
@@ -221,10 +238,26 @@ class Minigame_5(ScreenBase):
                     py.time.set_timer(self.reload_event, self.reload_speed)
                     py.time.set_timer(self.gun_shot_disappear_event, self.time_till_shot_disappear)
                     py.time.set_timer(self.gun_status_event, self.time_till_gun_status_text_disappears)
+
+                    py.mixer.music.play(0)
                     self.score += 10
 
-                if not self.collidecheck:
+                if self.collidecheck2:
                     self.reloaded_gun = False
+                    self.showing_target2 = False
+                    py.mixer.music.play()
+                    self.gun_status = 1
+                    self.gun_shot_succes = True
+                    self.gun_status_display = True
+                    self.target_rect2.x = 1280
+                    py.time.set_timer(self.reload_event, self.reload_speed)
+                    py.time.set_timer(self.gun_shot_disappear_event, self.time_till_shot_disappear)
+                    py.time.set_timer(self.gun_status_event, self.time_till_gun_status_text_disappears)
+                    self.score += 10
+
+                if not self.collidecheck or self.collidecheck2:
+                    self.reloaded_gun = False
+                    py.mixer.music.play()
                     self.gun_status = 2
                     self.gun_shot_succes = True
                     self.gun_status_display = True
@@ -232,6 +265,7 @@ class Minigame_5(ScreenBase):
                     py.time.set_timer(self.gun_shot_disappear_event, self.time_till_shot_disappear)
                     py.time.set_timer(self.gun_status_event, self.time_till_gun_status_text_disappears)
                     self.score -= 5
+
             if not self.reloaded_gun:
                 pass
 
@@ -252,9 +286,9 @@ class Minigame_5(ScreenBase):
         elif keys[py.K_8]:
             self.crosshair_speed = 40
         elif keys[py.K_9]:
-            self.crosshair_speed = 45
+            self.crosshair_speed = 20
         elif keys[py.K_0]:
-            self.crosshair_speed = 50
+            self.crosshair_speed = 10
         return
 
     def handle_mouse_position(self, mouse_position):
