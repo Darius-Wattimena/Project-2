@@ -41,4 +41,5 @@ class Button:
             self.is_hovering = False
 
     def is_clicked(self, mouse_position):
-        return self.rect.collidepoint(mouse_position)
+        if self.rect != None:
+            return self.rect.collidepoint(mouse_position)
