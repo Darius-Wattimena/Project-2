@@ -3,6 +3,7 @@ from src.helper.screen_base import ScreenBase
 from src.helper.game_object_group import GameObjectGroup
 from src.minigame1.ai import AI
 from src.minigame1.custom_event import AIEvent
+from src.minigame1.health_bar import HealthBar
 from .player import Player, PlayerState
 import pygame as py
 
@@ -18,13 +19,15 @@ class Fight(ScreenBase):
         self.ai = AI(self.game_object_group, self.game.py_screen, self)
         self.first = True
         self.passed_time = 0
-        self.player_health_label = Label(self.game.py_screen, "Player Health: " + str(self.player.health), [254, 254, 254], 50)
-        self.ai_health_label = Label(self.game.py_screen, "AI Health: " + str(self.ai.health), [254, 254, 254], 50)
+        self.player_health_bar = HealthBar(self.game.py_screen, 10, 10, True)
+        self.ai_health_bar = HealthBar(self.game.py_screen, 860, 10, False)
         self.winner_label = Label(self.game.py_screen, "", [254, 254, 254], 100)
         self.fight_paused_label = Label(self.game.py_screen, "Paused", [254, 254, 254], 100)
         self.fight_paused = False
         self.ai_event = AIEvent(self.ai, self.player)
         py.time.set_timer(self.ai_event.type, 600)
+
+
 
     def on_events(self, events):
         for event in events:
@@ -57,14 +60,12 @@ class Fight(ScreenBase):
             self.ai.on_render()
 
             if self.player.is_hitting_punch(self.ai):
-                remaining_health = self.ai.on_hit(self.player)
-                self.ai_health_label.text = "AI Health: " + str(remaining_health)
+                self.ai.on_hit(self.player)
             if self.ai.is_hitting_punch(self.player):
-                remaining_health = self.player.on_hit(self.ai)
-                self.player_health_label.text = "Player Health: " + str(remaining_health)
+                self.player.on_hit(self.ai)
 
-            self.player_health_label.render(100, 400)
-            self.ai_health_label.render(500, 400)
+            self.ai_health_bar.on_render(self.ai)
+            self.player_health_bar.on_render(self.player)
         elif self.fight_paused:
             x = (self.game.py_screen.get_width() / 2) - (self.winner_label.get_width() / 2)
             y = (self.game.py_screen.get_height() / 2) - 100
