@@ -10,7 +10,7 @@ from src.minigame1.custom_event import FightDoneEvent
 
 class AI(GameObject):
     def __init__(self, object_group: GameObjectGroup, py_screen, fight_class):
-        super().__init__(object_group, 1, True, py.Rect([200, 100], [35, 80]))
+        super().__init__(object_group, 1, True, py.Rect([800, 400], [35, 80]))
         self.damage_max = 10
         self.damage_min = 3
         self.health = 100
