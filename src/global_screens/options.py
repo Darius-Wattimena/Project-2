@@ -15,9 +15,10 @@ class Options(ScreenBase):
         game.drawer.add_background_image("resources/graphics/main_menu_background.png")
         self.btn.append(OptionsButton(game.py_screen, "Back"))
         self.title = OptionsLabel(game.py_screen, "Options", 75)
-        self.resolution_label = OptionsLabel(game.py_screen, "Resolution :", 50)
+        self.debug_label = OptionsLabel(game.py_screen, "Debug Mode :", 50)
+        self.debug_checkbox = CheckBox(game.py_screen, [0, 0, 0], 50, self.game.DEBUG, 2, [255, 0, 0])
         self.full_screen_label = OptionsLabel(game.py_screen, "Full Screen :", 50)
-        self.full_screen_checkbox = CheckBox(game.py_screen, [0, 0, 0], 50, self.game.FULLSCREEN, 2, [254, 0, 0])
+        self.full_screen_checkbox = CheckBox(game.py_screen, [0, 0, 0], 50, self.game.FULLSCREEN, 2, [255, 0, 0])
         self.volume_label = OptionsLabel(game.py_screen, "Volume :", 50)
         self.language_label = OptionsLabel(game.py_screen, "Language :", 50)
         self.panel_background = py.image.load("resources/graphics/menu_background_v3.png")
@@ -37,6 +38,8 @@ class Options(ScreenBase):
             if event.type == py.MOUSEBUTTONDOWN:
                 if self.btn[0].is_clicked(self.mouse_position):
                     self.back_to_main_menu()
+                elif self.debug_checkbox.is_clicked(self.mouse_position):
+                    self.toggle_debug()
                 elif self.full_screen_checkbox.is_clicked(self.mouse_position):
                     self.toggle_fullscreen()
 
@@ -49,7 +52,8 @@ class Options(ScreenBase):
 
         self.render_panel()
         self.title.render(title_x, 80)
-        self.resolution_label.render(y=180, right=options_label_right)
+        self.debug_label.render(y=180, right=options_label_right)
+        self.debug_checkbox.render(self.mouse_position, options_label_right + 20, 185)
         self.full_screen_label.render(y=260, right=options_label_right)
         self.full_screen_checkbox.render(self.mouse_position, options_label_right + 20, 265)
         self.volume_label.render(y=340, right=options_label_right)
@@ -81,7 +85,15 @@ class Options(ScreenBase):
             self.full_screen_checkbox.is_checked = True
             self.game.py_screen = py.display.set_mode([self.game.config.width, self.game.config.height], py.FULLSCREEN)
             self.game.FULLSCREEN = True
-        pass
+
+    def toggle_debug(self):
+        is_checked = self.debug_checkbox.is_checked
+        if is_checked:
+            self.debug_checkbox.is_checked = False
+            self.game.DEBUG = False
+        else:
+            self.debug_checkbox.is_checked = True
+            self.game.DEBUG = True
 
 
 class OptionsButton(ImageButton):

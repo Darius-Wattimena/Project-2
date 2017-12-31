@@ -19,6 +19,7 @@ class Game:
         self.temp_screen = None
         self.config = None
         self.FULLSCREEN = False
+        self.DEBUG = False
         self.clock = py.time.Clock()
 
     def enable_logging(self):

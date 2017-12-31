@@ -15,8 +15,9 @@ class Fight(ScreenBase):
         self.game_object_group = GameObjectGroup()
         self.game.drawer.clear()
         self.game.drawer.add_image("resources/graphics/minigame_1/background.png")
-        self.player = Player(self.game_object_group, self.game.py_screen, self)
-        self.ai = AI(self.game_object_group, self.game.py_screen, self)
+        debug = self.game.DEBUG
+        self.player = Player(self.game_object_group, self.game.py_screen, debug)
+        self.ai = AI(self.game_object_group, self.game.py_screen, debug)
         self.first = True
         self.passed_time = 0
         self.player_health_bar = HealthBar(self.game.py_screen, 10, 10, True)
@@ -54,7 +55,9 @@ class Fight(ScreenBase):
             self.fight_paused = not self.fight_paused
 
     def on_render(self):
-        if not self.fight_paused and (self.player.is_rendering() or self.ai.is_rendering()):
+        player_needs_rendering = self.player.is_rendering()
+        ai_needs_rendering = self.ai.is_rendering()
+        if not self.fight_paused and (player_needs_rendering or ai_needs_rendering):
             self.game.drawer.draw_canvas()
             self.player.on_render()
             self.ai.on_render()

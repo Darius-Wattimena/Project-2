@@ -31,18 +31,18 @@ class AIEvent:
             if behaviour < 30:
                 self.ai.state = AIState.BLOCKING
             else:
-                if hit_gap > 20:
+                if hit_gap > self.ai.hit_range:
                     self.ai.state = AIState.WALKING
-                elif hit_gap < 20:
+                elif hit_gap < self.ai.hit_range:
                     self.ai.state = AIState.WALKING_REVERSE
                 else:
                     self.ai.state = AIState.IDLE
-        elif hit_gap < 20:
+        elif hit_gap < self.ai.hit_range:
             if behaviour < 75:
                 self.ai.punching = True
             else:
                 self.ai.state = AIState.WALKING_REVERSE
-        elif hit_gap > 20:
+        elif hit_gap > self.ai.hit_range:
             self.ai.state = AIState.WALKING
         else:
             self.ai.state = AIState.IDLE
