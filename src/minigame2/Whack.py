@@ -26,14 +26,18 @@ class Whack(ScreenBase):
         self.mouse_position = None
         self.ShowIndian = True;
         self.color = [255, 0, 0]
-        self.hitLabel = Label(self.game.py_screen, "Hit!", [255,0,0], 40)
+        self.livesLostLabel = Label(self.game.py_screen, "Ouch!", [255,0,0], 40)
+        self.hitLabel = Label(self.game.py_screen, "Hit!", [0,255,0], 40)
         self.ShowTimer = 30
         self.ShowHitLabel = False
-        self.LivesLabel = Label(self.game.py_screen, "", [0,255,0], 50)
-        self.PointsLabel = Label(self.game.py_screen, "", [0, 255, 0], 50)
+        self.ShowLivesLostLabel = False
+        self.LivesLabel = Label(self.game.py_screen, "", [0,0,255], 50)
+        self.PointsLabel = Label(self.game.py_screen, "", [0, 0, 255], 50)
         self.PointsLabel.text = "Points: " + str(self.points)
         self.LivesLabel.text = "Lives: " + str(self.lives)
-        #py.draw.rect(self.game.py_screen, [255, 0, 0], self.rect)
+        self.EndGame = False
+        self.EndGameLabel = Label(self.game.py_screen, "You are dead! " + "Points: " + str(self.points), [255, 255, 255], 50)
+
 
 
     def on_events(self, events):
@@ -43,85 +47,61 @@ class Whack(ScreenBase):
                 if self.rect is not None:
                     if self.rect.collidepoint(self.mouse_position):
                         if self.ShowIndian:
-                            self.ShowHitLabel = True
-                            self.points += 1
-                            self.PointsLabel.text = "Points: " + str(self.points)
-                            self.rect = None
-                            self.game.logger.info("Click on Indian")
-                            self.game.logger.info(
-                                str(self.mouse_position) + " lives: " + str(self.lives) + " points: " + str(
-                                    self.points))
+                            self.updatePlayerPoints()
                         else:
-                            self.lives -= 1
-                            self.rect = None
-                            self.LivesLabel.text = "Lives: " + str(self.lives)
-                            self.game.logger.info("Click on Cowboy")
-                            self.game.logger.info(
-                                str(self.mouse_position) + " lives: " + str(self.lives) + " points: " + str(
-                                    self.points))
+                            self.updatePlayerLives()
                     else:
                         if self.lives > 0:
                             self.lives -= 1
                             if self.lives == 0:
-                                self.points = 9999 #TODO engame
+                                self.EndGame = True;
                                 self.game.logger.info("points: " + str(self.points))
-                                self.game.logger.info("Click on Cowboy or missed")
-                else:
-                    self.game.logger.info(
-                        "Rect is none")
-
         return
+
+    def updatePlayerPoints(self):
+        self.ShowHitLabel = True
+        self.points += 1
+        self.PointsLabel.text = "Points: " + str(self.points)
+        self.rect = None
+
+    def updatePlayerLives(self):
+        self.ShowLivesLostLabel = True
+        self.lives -= 1
+        self.LivesLabel.text = "Lives: " + str(self.lives)
+        self.rect = None
 
     def on_update(self):
         self.passed_time += self.game.clock.get_time()
-       # if self.lives == 0:
-
         return
 
     def on_render(self):
         self.game.drawer.draw_canvas()
+        if self.EndGame:
+            self.EndGameLabel.render(500, 500)
 
         if self.passed_time > self.get_speed_in_miliseconds():
             self.passed_time = 0
             self.location = Indian.get_location(self)
             self.change_color()
-            if self.ShowIndian:
-                self.rect = self.indianImage.get_rect()
-                self.rect.x = self.location[0]
-                self.rect.y = self.location[1]
-             #   self.game.py_screen.blit(self.indianImage, self.location)
-                #self.rect = py.Rect(self.location, [100, 100])
-
-            else:
-                self.rect = self.cowboyImage.get_rect()
-                self.rect.x = self.location[0]
-                self.rect.y = self.location[1]
-              #  self.game.py_screen.blit(self.cowboyImage, self.location)
-
-        #if self.rect != None:
-         #py.draw.rect(self.game.py_screen, self.color, self.rect)
+            self.setNewTarget(False)
         elif self.rect is not None:
-            if self.ShowIndian:
-                self.game.py_screen.blit(self.indianImage, self.location)
-                self.rect = self.indianImage.get_rect()
-                self.rect.x = self.location[0]
-                self.rect.y = self.location[1]
-            else:
-                self.game.py_screen.blit(self.cowboyImage, self.location)
-                self.rect = self.cowboyImage.get_rect()
-                self.rect.x = self.location[0]
-                self.rect.y = self.location[1]
+            self.setNewTarget(True)
 
         if self.ShowHitLabel:
             self.ShowTimer -= 1
             self.hitLabel.render(self.location[0], self.location[1])
 
+        if self.ShowLivesLostLabel:
+            self.ShowTimer -= 1
+            self.livesLostLabel.render(self.location[0], self.location[1])
+
         if self.ShowTimer == 0:
             self.ShowHitLabel = False
+            self.ShowLivesLostLabel = False
             self.ShowTimer = 30
 
         self.LivesLabel.render(900, 100)
-        self.PointsLabel.render(900, 300)
+        self.PointsLabel.render(900, 200)
         py.display.update()
 
     def handle_mouse_input(self, mouse):
@@ -131,6 +111,20 @@ class Whack(ScreenBase):
         return
 
     def handle_mouse_position(self, mouse_position):
+        return
+
+    def setNewTarget(self, requiredBlit):
+        if self.ShowIndian:
+            if requiredBlit:
+                self.game.py_screen.blit(self.indianImage, self.location)
+            self.rect = self.indianImage.get_rect()
+        else:
+            if requiredBlit:
+                self.game.py_screen.blit(self.cowboyImage, self.location)
+            self.rect = self.cowboyImage.get_rect()
+
+        self.rect.y = self.location[1]
+        self.rect.x = self.location[0]
         return
 
     def display_Indian(self):
