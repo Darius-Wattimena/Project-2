@@ -17,7 +17,7 @@ class Whack(ScreenBase):
         self.points = 0
         self.indianImage = py.image.load("resources/graphics/minigame_2/rsz_indian.png")
         self.cowboyImage = py.image.load("resources/graphics/minigame_2/rsz_mccree.png")
-        self.lives = 3
+        self.lives = 1
         self.DisplayNewIndian = True;
         self.passed_time = 0
         self.location = Indian.get_location(self)
@@ -36,7 +36,9 @@ class Whack(ScreenBase):
         self.PointsLabel.text = "Points: " + str(self.points)
         self.LivesLabel.text = "Lives: " + str(self.lives)
         self.EndGame = False
-        self.EndGameLabel = Label(self.game.py_screen, "You are dead! " + "Points: " + str(self.points), [255, 255, 255], 50)
+        self.EndGameLabel = Label(self.game.py_screen, "", [0, 0, 0], 50)
+        self.ShowKeyBinds = False
+        self.KeyBinds = Label(self.game.py_screen, "Press R to restart the game!", [0, 0,0], 50)
 
 
 
@@ -53,6 +55,7 @@ class Whack(ScreenBase):
                     else:
                         if self.lives > 0:
                             self.lives -= 1
+
                             if self.lives == 0:
                                 self.EndGame = True;
                                 self.game.logger.info("points: " + str(self.points))
@@ -66,7 +69,13 @@ class Whack(ScreenBase):
 
     def updatePlayerLives(self):
         self.ShowLivesLostLabel = True
-        self.lives -= 1
+        if self.lives >0:
+            self.lives -= 1
+
+            if self.lives == 0:
+                self.EndGameLabel.text = "You are dead! " + "Points: " + str(self.points)
+                self.EndGame = True;
+                self.game.logger.info("points: " + str(self.points))
         self.LivesLabel.text = "Lives: " + str(self.lives)
         self.rect = None
 
@@ -77,13 +86,20 @@ class Whack(ScreenBase):
     def on_render(self):
         self.game.drawer.draw_canvas()
         if self.EndGame:
-            self.EndGameLabel.render(500, 500)
+
+            self.EndGameLabel.render(450, 250)
+            self.ShowKeyBinds = True
+            self.KeyBinds.render(450, 300)
+            py.display.update()
+            return
 
         if self.passed_time > self.get_speed_in_miliseconds():
             self.passed_time = 0
             self.location = Indian.get_location(self)
             self.change_color()
             self.setNewTarget(False)
+            self.ShowHitLabel = False
+            self.ShowLivesLostLabel = False
         elif self.rect is not None:
             self.setNewTarget(True)
 
@@ -108,6 +124,13 @@ class Whack(ScreenBase):
         return
 
     def handle_key_input(self, keys):
+        if self.EndGame == True:
+            if keys[py.K_ESCAPE]:
+                return
+                #todo
+            if keys[py.K_r]:
+                self.__init__(self.game) #bad practice! but it works
+
         return
 
     def handle_mouse_position(self, mouse_position):
@@ -137,6 +160,10 @@ class Whack(ScreenBase):
     def get_speed_in_miliseconds(self):
         if self.points > 3:
             return 1500
+        if self.points > 10:
+            return 1000
+        if self.points > 25:
+            return 500
         return 3000
 
     def change_color(self):

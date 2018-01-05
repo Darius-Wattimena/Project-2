@@ -11,20 +11,20 @@ class Indian():
         random_number = randint(1,9)
 
         if  random_number == 1:
-            return [100, 100]
+            return [150, 150]
         if  random_number == 2:
-            return [100, 200]
+            return [150, 300]
         if  random_number == 3:
-            return [100, 300]
+            return [150, 450]
         if  random_number == 4:
-            return [200, 100]
+            return [300, 150]
         if  random_number == 5:
-            return [200, 200]
+            return [300, 300]
         if  random_number == 6:
-            return [200, 300]
+            return [300, 450]
         if  random_number == 7:
-            return [300,100]
+            return [450, 150]
         if  random_number == 8:
-            return [300,200]
+            return [450, 300]
         if  random_number == 9:
-            return [300,300]
+            return [450, 450]
