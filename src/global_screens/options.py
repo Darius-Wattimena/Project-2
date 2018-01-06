@@ -118,8 +118,7 @@ class OptionsLabel(Label):
         if right is None:
             super().render(x, y)
         else:
-            font = py.font.Font(self.font, self.size)
-            text = font.render(self.text, True, self.color)
+            text = self.font.render(self.text, True, self.color)
             text_rect = text.get_rect(y=y, right=right)
             self.screen.blit(text, text_rect)
 

@@ -60,6 +60,7 @@ class MainMenu(ScreenBase):
         self.game.drawer.clear()
         Options(self.game)
 
+
 class MainMenuButton(ImageButton):
     def __init__(self, screen, text):
         button_file = "resources/graphics/button_background_v3.png"

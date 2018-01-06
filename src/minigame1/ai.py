@@ -11,7 +11,7 @@ from src.minigame1.custom_event import FightDoneEvent
 
 class AI(GameObject):
     def __init__(self, object_group: GameObjectGroup, py_screen, debug):
-        super().__init__(object_group, 1, True, py.Rect([800, 400], [35 * 3, 80 * 3]))
+        super().__init__(object_group, 1, True, py.Rect([950, 400], [35 * 3, 80 * 3]))
         self.debug = debug
         self.damage_max = 10
         self.damage_min = 3
@@ -56,10 +56,10 @@ class AI(GameObject):
         self.walk_animation.add_scope(144 * 3, 0)
         self.walk_animation.add_scope(189 * 3, 0)
 
-        self.punch_animation = Animation(self.py_screen, punch_image, 5, 38 * 3, 80 * 3)
+        self.punch_animation = Animation(self.py_screen, punch_image, 5, 38 * 3, 84 * 3)
         self.punch_animation.add_scope(0, 0)
         self.punch_animation.add_scope(51 * 3, 0)
-        self.punch_animation.add_scope(110 * 3, 0)
+        self.punch_animation.add_scope(95 * 3, 0)
         self.punch_animation.add_scope(186 * 3, 0)
         self.punch_animation.add_scope(241 * 3, 0)
 
@@ -76,7 +76,7 @@ class AI(GameObject):
     def mirror_sprite(self, surface):
         return py.transform.flip(surface, True, False)
 
-    def is_rendering(self):
+    def needs_new_rendering(self):
         self.drawing = False
         self.render_counter += 1
         if self.state == AIState.BLOCKING or self.punching:
@@ -106,25 +106,32 @@ class AI(GameObject):
             if self.debug:
                 py.draw.rect(self.py_screen, [0, 255, 0], self.punch_rect, 2)
 
-            if self.punch_animation.current_animation == 3:
-                self.punch_animation.rect.width = 68 * 3
+            if self.punch_animation.current_animation == 2:
+                self.punch_animation.rect.width = 46 * 3
+            elif self.punch_animation.current_animation == 3:
+                self.punch_animation.rect.width = 72 * 3
             elif self.punch_animation.current_animation == 4:
-                self.punch_animation.rect.width = 38 * 3
+                self.punch_animation.rect.width = 46 * 3
 
             # Stop punch animation if finished
             if self.punch_animation.current_animation == self.punch_animation.animation_count:
                 self.punch_animation.current_animation = 1
                 self.punch_animation_running = False
+                self.idle_animation.on_old_render(self.rect)
             else:
+                punch_location = py.Rect(self.rect)
+                if self.punch_animation.current_animation == 3:
+                    punch_location.x = self.rect.x - 110
+
                 # Check if we need a new animation
                 self.punch_render_counter += 1
-                if self.punch_render_counter >= 2:
+                if self.punch_render_counter >= 5:
                     # Render punch animation
-                    self.punch_animation.on_render(self.rect)
+                    self.punch_animation.on_render(punch_location)
                     self.punch_render_counter = 0
                 else:
                     # Render old punch animation when we do not need a new frame
-                    self.punch_animation.on_old_render(self.rect)
+                    self.punch_animation.on_old_render(punch_location)
         elif self.punching:
             self.punch()
         else:
@@ -157,7 +164,7 @@ class AI(GameObject):
             self.hit_rect.y -= 20
 
             damage = randint(player.damage_min, player.damage_max)
-            if self.health < damage:
+            if self.health <= damage:
                 self.health = 0
                 py.event.post(FightDoneEvent(self).get_event())
             else:
@@ -183,7 +190,11 @@ class AI(GameObject):
 
     def walk_r(self):
         if self.drawing:
-            self.rect.move_ip(12, 0)
+            if self.rect.right <= 1268:
+                self.rect.move_ip(12, 0)
+            elif self.rect.right < 1280:
+                max_moving = self.rect.right - 1280
+                self.rect.move_ip(max_moving, 0)
             self.walk_animation.on_render(self.rect)
         else:
             self.walk_animation.on_old_render(self.rect)
@@ -206,6 +217,17 @@ class AI(GameObject):
             self.punching = False
             return self.punch_rect.colliderect(player.rect)
         return False
+
+    def set_state(self, state):
+        if self.state != state:
+            self.render_counter = 0
+            self.state = state
+
+    def paused(self):
+        self.punch_render_counter = 0
+        self.punch_animation_running = False
+        self.punching = False
+        self.idle()
 
 
 class AIState(IntEnum):

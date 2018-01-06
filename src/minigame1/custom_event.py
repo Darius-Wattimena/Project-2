@@ -29,14 +29,14 @@ class AIEvent:
         player_blocking = self.player.state == PlayerState.BLOCKING
         if player_blocking:
             if behaviour < 30:
-                self.ai.state = AIState.BLOCKING
+                self.ai.set_state(AIState.BLOCKING)
             else:
                 if hit_gap > self.ai.hit_range:
-                    self.ai.state = AIState.WALKING
+                    self.ai.set_state(AIState.WALKING)
                 elif hit_gap < self.ai.hit_range:
-                    self.ai.state = AIState.WALKING_REVERSE
+                    self.ai.set_state(AIState.WALKING_REVERSE)
                 else:
-                    self.ai.state = AIState.IDLE
+                    self.ai.set_state(AIState.IDLE)
         elif hit_gap < self.ai.hit_range:
             if behaviour < 75:
                 self.ai.punching = True
@@ -64,8 +64,8 @@ class FightDoneEvent:
         if type(self.loser) is AI:
             fight.player.won_fight = True
             fight.fight_paused = True
-            fight.winner_label.text = "Player Won!!"
+            fight.winner_label.text = "Player Won!"
         elif type(self.loser) is Player:
             fight.player.won_fight = False
             fight.fight_paused = True
-            fight.winner_label.text = "AI Won!!"
+            fight.winner_label.text = "Enemy Won!"
