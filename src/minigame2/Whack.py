@@ -81,13 +81,6 @@ class Whack(ScreenBase):
                             self.updatePlayerPoints()
                         else:
                             self.updatePlayerLives()
-                    else:
-                        if self.lives > 0:
-                            self.lives -= 1
-
-                            if self.lives == 0:
-                                self.EndGame = True;
-                                self.game.logger.info("points: " + str(self.points))
             if event.type == py.MOUSEBUTTONDOWN:
                 if self.btn[0].is_clicked(self.mouse_position):
                     self.StartGame = True
@@ -108,7 +101,6 @@ class Whack(ScreenBase):
         self.ShowLivesLostLabel = True
         if self.lives >0:
             self.lives -= 1
-
             if self.lives == 0:
                 self.EndGameLabel.text = "You are dead! " + "Points: " + str(self.points)
                 self.EndGame = True;
