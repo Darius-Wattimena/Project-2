@@ -16,6 +16,7 @@ class Minigame_3(ScreenBase):
         self.enemy_is_spawned = True
         self.wingame = False
         self.enemy_is_moving = True
+        self.player_is_collided = False
         self.coyote_is_spawned = True
         self.coyote_is_moving = True
         self.startgame = False
@@ -103,7 +104,7 @@ class Minigame_3(ScreenBase):
         # Resize je foto omdat de photo kleiner is dan de player rect
         self.player_image = py.transform.scale(self.player_image, [player_width, player_height])
         self.player_rect = py.Rect([640, 650], [player_width, player_height])
-        self.lives = 100
+        self.lives = 2
 
     def enemy(self):
         enemy_width = 100
@@ -131,6 +132,7 @@ class Minigame_3(ScreenBase):
                     self.selected_location = enemy.get_location(self)
                     self.enemy_rect.x = self.selected_location[0]
                     self.enemy_rect.y = self.selected_location[1]
+                    self.player_is_collided = False
                 if event.type == self.move_event:
                     self.enemy_is_moving = True
                     self.enemy_rect.move_ip(0, 2)
@@ -138,15 +140,15 @@ class Minigame_3(ScreenBase):
                 if event.type == self.collide_event:
                     collision = self.player_rect.colliderect(self.enemy_rect)
                     if collision:
-                        # TODO despawn enemy when collided
-                        if self.lives > 0:
-                            self.lives -= 1
-                            self.lives_label.text = "Current Lives: " + str(self.lives)
-                            self.enemy_is_spawned = False
-                        elif self.lives == 0:
-                            self.lives_label.text = "You Died!! press R to restart, press ESC to go back"
-                            self.endgame = True
-                            self.startgame = False
+                        if self.player_is_collided == False:
+                            # TODO despawn enemy when collided
+                            if self.lives > 0:
+                                self.lives -= 1
+                                self.player_is_collided = True
+                                self.lives_label.text = "Current Lives: " + str(self.lives)
+                            elif self.lives == 0:
+                                self.endgame = True
+                                self.startgame = False
                 if event.type == self.coyote_event:
                     self.coyote_is_spawned = True
                 self.coyote_selected_location = self.coyote_location
