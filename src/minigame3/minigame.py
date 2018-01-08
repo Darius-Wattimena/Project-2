@@ -142,7 +142,7 @@ class Minigame_3(ScreenBase):
                     if collision:
                         if self.player_is_collided == False:
                             # TODO despawn enemy when collided
-                            if self.lives > 0:
+                            if self.lives > 1:
                                 self.lives -= 1
                                 self.player_is_collided = True
                                 self.lives_label.text = "Current Lives: " + str(self.lives)
@@ -161,10 +161,12 @@ class Minigame_3(ScreenBase):
                         if self.endgame == False:
                             self.startgame = True
                             self.endgame = False
+                            self.wingame = False
                         elif self.endgame == True or self.wingame == True:
                             self.__init__(self.game)
                             self.endgame = False
                             self.startgame = True
+                            self.wingame = False
                     elif self.btn[1].is_clicked(self.mouse_position):
                         from src.global_screens.pick_minigame import PickMinigame
                         self.game.drawer.clear()
