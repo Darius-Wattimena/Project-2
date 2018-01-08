@@ -19,7 +19,7 @@ class Minigame_4(ScreenBase):
         self.player_speed = 10
         self.player_rect = py.Rect([self.player_x, self.player_y], [100, 100])
 
-        int(self.time)
+
         self.time = 120000/1000
         self.timer_label = Label(self.game.py_screen, "", [254, 254, 254], 50)
         self.game_duration = 120
