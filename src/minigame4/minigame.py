@@ -11,16 +11,18 @@ class Minigame_4(ScreenBase):
         self.game = game
         self.game.set_screen(self)
         self.background_image = py.image.load("resources/graphics/minigame_4/background3.jpg")
-        self.player_image = py.image.load("resources/graphics/minigame_4/hourse.jpg")
+        self.player_image = py.image.load("resources/graphics/minigame_4/horse2.png")
         self.background_image_rect = self.background_image.get_rect()
 
         self.player_x = 640
         self.player_y = 360
         self.player_speed = 10
-        self.player_rect = py.Rect([self.player_x, self.player_y], [100, 75])
+        self.player_rect = py.Rect([self.player_x, self.player_y], [100, 100])
 
-        self.time = 120000
+        int(self.time)
+        self.time = 120000/1000
         self.timer_label = Label(self.game.py_screen, "", [254, 254, 254], 50)
+        self.game_duration = 120
 
         # Dit zijn eigen events die we aanroepen via de timer class en handelen in de on_events methode
         self.spawn_cactus_event = py.USEREVENT + 1
@@ -75,7 +77,7 @@ class Minigame_4(ScreenBase):
             if event.type == self.spawn_cactus_event:
                 if self.total_cactus_spawned == -1:
                     pass
-                elif self.total_cactus_spawned >= 3:
+                elif self.total_cactus_spawned >= 20:
                     self.total_cactus_spawned = -1
                     self.spawn_finish_line = True
                 else:
@@ -100,7 +102,7 @@ class Minigame_4(ScreenBase):
             for cactus in cactus_row.items:
                 if self.player_rect.colliderect(cactus.rect):
                     cactus_row.items.remove(cactus)
-                    self.time -= 5000
+                    self.time -= 50
                     # TODO add strafpunten
         if self.spawn_finish_line:
             if self.player_rect.colliderect(self.finish_line_rect):
@@ -125,8 +127,8 @@ class Minigame_4(ScreenBase):
         for cactus_row in self.cactus_rows:
             cactus_row.render()
         if self.spawn_finish_line:
-            py.draw.rect(self.game.py_screen, [255, 255, 255], self.finish_line_rect)
+            py.draw.rect(self.game.py_screen, [127, 255, 212], self.finish_line_rect)
         # self.game.py_screen.blit(self.player_image, self.player_rect)
-        py.draw.rect(self.game.py_screen, [255, 255, 255], self.player_rect)
+        self.game.py_screen.blit(self.player_image, self.player_rect)
         self.timer_label.render(500, 100)
         py.display.update()
