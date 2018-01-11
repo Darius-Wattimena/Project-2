@@ -20,7 +20,7 @@ class Minigame_4(ScreenBase):
 
         self.player_x = 640
         self.player_y = 360
-        self.player_speed = 30
+        self.player_speed = 10
         self.player_rect = py.Rect([self.player_x, self.player_y], [100, 100])
 
         self.starting_timer = None
