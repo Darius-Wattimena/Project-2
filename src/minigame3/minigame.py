@@ -21,6 +21,7 @@ class Minigame_3(ScreenBase):
         self.coyote_is_moving = True
         self.startgame = False
         self.endgame = False
+        self.wingame = False
         self.groundcolor = (240, 230, 140)
         self.skycolor = (20, 20, 255)
 
