@@ -16,7 +16,7 @@ class Minigame_4(ScreenBase):
         self.game = game
         self.game.set_screen(self)
         self.background_image = py.image.load("resources/graphics/minigame_4/background3.jpg")
-        self.player_image = py.image.load("resources/graphics/minigame_4/horse2.png").convert_alpha()
+        self.player_image = py.image.load("resources/graphics/minigame_4/cowboyhorse.png").convert_alpha()
         self.background_image_rect = self.background_image.get_rect()
 
         self.player_x = 640
@@ -64,9 +64,9 @@ class Minigame_4(ScreenBase):
         self.finished_label = HeaderLabel(self.game.py_screen, "")
 
         self.objective_text = ["Game Objective",
-                               "Use your fists to fight against",
-                               "your opponent and win",
-                               "by beating him to 0 hp!"]
+                               "Take your horse and race",
+                               "Try not to touch the cuctus",
+                               "You will lose if your finish time is 0!"]
         self.objective_label_header = HeaderLabel(self.game.py_screen, self.objective_text[0])
         self.objective_label_text_1 = TextLabel(self.game.py_screen, self.objective_text[1])
         self.objective_label_text_2 = TextLabel(self.game.py_screen, self.objective_text[2])
@@ -74,13 +74,13 @@ class Minigame_4(ScreenBase):
 
         self.controls_text = ["Controls",
                               "A and D",
-                              "Move your fighter to the left and right",
-                              "J",
-                              "Punch",
-                              "K",
-                              "Block",
-                              "ESC",
-                              "Show pause screen"]
+                              "Move to the left and right",
+                              "W and S ",
+                              "Move up and down",
+                              "",
+                              "",
+                              "",
+                              ""]
 
         self.controls_label_header = HeaderLabel(self.game.py_screen, self.controls_text[0])
         self.controls_label_text_1 = TextLabel(self.game.py_screen, self.controls_text[1])
@@ -127,7 +127,7 @@ class Minigame_4(ScreenBase):
             if event.type == self.spawn_cactus_event and self.StartGame:
                 if self.total_cactus_spawned == -1:
                     pass
-                elif self.total_cactus_spawned >= 50:
+                elif self.total_cactus_spawned >= 30:
                     self.total_cactus_spawned = -1
                     self.spawn_finish_line = True
                 else:
@@ -160,7 +160,7 @@ class Minigame_4(ScreenBase):
                 for cactus in cactus_row.items:
                     if self.player_rect.colliderect(cactus.rect):
                         cactus_row.items.remove(cactus)
-                        self.time -= 5
+                        self.time -= 10
             if self.spawn_finish_line:
                 if self.player_rect.colliderect(self.finish_line_rect):
                     self.won = True
