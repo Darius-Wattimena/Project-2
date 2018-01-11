@@ -1,13 +1,12 @@
+import time
+
+import pygame as py
+
 from src.helper.label import Label
 from src.helper.screen_base import ScreenBase
-import pygame as py
-import time
-import logging
-
 from src.minigame1.fight import PauseScreenButton
 from src.minigame1.ui.header_label import HeaderLabel
 from src.minigame1.ui.text_label import TextLabel
-from src.minigame4.cactus import Cactus
 from src.minigame4.cactus_row import CactusRow
 
 
@@ -25,7 +24,7 @@ class Minigame_4(ScreenBase):
         self.player_rect = py.Rect([self.player_x, self.player_y], [100, 100])
 
         self.starting_timer = None
-        self.timer_label = Label(self.game.py_screen, "", [254, 254, 254], 50)
+        self.timer_label = HeaderLabel(self.game.py_screen, "", [255, 255, 255], 50)
         self.game_duration = 120
         self.time = self.game_duration
 
@@ -76,25 +75,19 @@ class Minigame_4(ScreenBase):
                               "A and D",
                               "Move to the left and right",
                               "W and S ",
-                              "Move up and down",
-                              "",
-                              "",
-                              "",
-                              ""]
+                              "Move up and down"]
 
         self.controls_label_header = HeaderLabel(self.game.py_screen, self.controls_text[0])
         self.controls_label_text_1 = TextLabel(self.game.py_screen, self.controls_text[1])
         self.controls_label_text_2 = TextLabel(self.game.py_screen, self.controls_text[2])
         self.controls_label_text_3 = TextLabel(self.game.py_screen, self.controls_text[3])
         self.controls_label_text_4 = TextLabel(self.game.py_screen, self.controls_text[4])
-        self.controls_label_text_5 = TextLabel(self.game.py_screen, self.controls_text[5])
-        self.controls_label_text_6 = TextLabel(self.game.py_screen, self.controls_text[6])
-        self.controls_label_text_7 = TextLabel(self.game.py_screen, self.controls_text[7])
-        self.controls_label_text_8 = TextLabel(self.game.py_screen, self.controls_text[8])
 
         self.btn = []
         self.btn.append(PauseScreenButton(game.py_screen, "Start"))
         self.btn.append(PauseScreenButton(game.py_screen, "Back"))
+
+        self.paused_label = Label(self.game.py_screen, "Horse Racing", [249, 239, 196], 100, font="resources/fonts/Carnevalee Freakshow.ttf")
 
         screen_center_width = self.game.py_screen.get_width() / 2
         self.button_x = screen_center_width - (self.btn[0].width / 2)
@@ -115,11 +108,10 @@ class Minigame_4(ScreenBase):
             self.player_rect.move_ip(self.player_speed, 0)
 
     def handle_mouse_input(self, event):
-            pass
+        pass
 
     def handle_mouse_position(self, mouse_position):
         self.mouse_position = mouse_position
-        pass
 
     def on_events(self, events):
         for event in events:
@@ -210,6 +202,8 @@ class Minigame_4(ScreenBase):
                     self.finished_label.text = "You lost"
                 self.finished_label.render(465, 100)
 
+            self.paused_label.render(400, 70)
+
             # Draw objective
             self.objective_label_header.render(465, 190)
             self.objective_label_text_1.render(465, 240)
@@ -222,10 +216,6 @@ class Minigame_4(ScreenBase):
             self.controls_label_text_2.render(585, 370)
             self.controls_label_text_3.render(465, 390)
             self.controls_label_text_4.render(585, 390)
-            self.controls_label_text_5.render(465, 410)
-            self.controls_label_text_6.render(585, 410)
-            self.controls_label_text_7.render(465, 430)
-            self.controls_label_text_8.render(585, 430)
             self.btn[1].render(self.mouse_position, self.button_x, 640)
             self.btn[0].render(self.mouse_position, self.button_x, 560)
 
