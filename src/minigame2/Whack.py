@@ -1,6 +1,7 @@
 from random import randint
 
 import pygame as py
+import os.path as path
 
 from src.helper.label import Label
 from src.helper.screen_base import ScreenBase
@@ -20,7 +21,7 @@ class Whack(ScreenBase):
         self.points = 0
         self.indianImage = py.image.load("resources/graphics/minigame_2/rsz_indian.png")
         self.cowboyImage = py.image.load("resources/graphics/minigame_2/rsz_mccree.png")
-        self.lives = 3
+        self.lives = 1
         self.DisplayNewIndian = True;
         self.passed_time = 0
         self.location = Indian.get_location(self)
@@ -41,8 +42,15 @@ class Whack(ScreenBase):
         self.LivesLabel.text = "Lives: " + str(self.lives)
         self.EndGame = False
         self.EndGameLabel = Label(self.game.py_screen, "", [0, 0, 0], 50)
-        self.ShowKeyBinds = False
-        self.KeyBinds = Label(self.game.py_screen, "Press R to restart the game!", [0, 0,0], 50)
+        self.highscore = 0
+        self.NewHighscore = False
+        self.ScoreLabel = Label(self.game.py_screen, "", [0,0,0], 50)
+        self.HighscoreLabel = Label(self.game.py_screen, "", [0,0,0], 50)
+
+        if path.isfile("highscores.txt"):
+            self.highscore = self.get_highscore()
+        else:
+            self.set_highscore()
 
         self.dark_surface = py.Surface((1280, 720))
         self.dark_surface.set_alpha(170)
@@ -57,14 +65,17 @@ class Whack(ScreenBase):
         self.objective_label_text_3 = TextLabel(self.game.py_screen, self.objective_text[3])
 
         self.controls_text = ["Controls",
-                              "Mouse"]
+                              "Move your mouse around and use Left Click"
+                              "to hit the targets!"]
 
         self.controls_label_header = HeaderLabel(self.game.py_screen, self.controls_text[0])
         self.controls_label_text_1 = TextLabel(self.game.py_screen, self.controls_text[1])
 
         self.btn = []
-        self.btn.append(PauseScreenButton(game.py_screen, "Start"))
-        self.btn.append(PauseScreenButton(game.py_screen, "Back"))
+        self.btn.append(PauseScreenButton(game.py_screen, "Start new game"))
+        self.btn.append(PauseScreenButton(game.py_screen, "Back to menu"))
+        self.btn.append(PauseScreenButton(game.py_screen, "Restart"))
+
 
         screen_center_width = self.game.py_screen.get_width() / 2
         self.button_x = screen_center_width - (self.btn[0].width / 2)
@@ -82,7 +93,9 @@ class Whack(ScreenBase):
                         else:
                             self.updatePlayerLives()
             if event.type == py.MOUSEBUTTONDOWN:
+                self.game.logger.info(str(self.mouse_position) + " " + str(self.btn.__len__()))
                 if self.btn[0].is_clicked(self.mouse_position):
+                    self.__init__(self.game)
                     self.StartGame = True
                     self.EndGame = False
                 elif self.btn[1].is_clicked(self.mouse_position):
@@ -102,8 +115,9 @@ class Whack(ScreenBase):
         if self.lives >0:
             self.lives -= 1
             if self.lives == 0:
-                self.EndGameLabel.text = "You are dead! " + "Points: " + str(self.points)
-                self.EndGame = True;
+                self.EndGameLabel.text = "You are dead!"
+                self.ScoreLabel.text = "Points: " + str(self.points)
+                self.EndGame = True
                 self.game.logger.info("points: " + str(self.points))
         self.LivesLabel.text = "Lives: " + str(self.lives)
         self.rect = None
@@ -116,9 +130,20 @@ class Whack(ScreenBase):
         if self.StartGame:
             self.game.drawer.draw_canvas()
             if self.EndGame:
-                self.EndGameLabel.render(450, 250)
-                self.ShowKeyBinds = True
-                self.KeyBinds.render(450, 300)
+                self.EndGameLabel.render(520, 250)
+                if self.points > self.get_highscore():
+                    self.set_highscore()
+                    self.NewHighscore = True
+
+                if self.NewHighscore:
+                    self.HighscoreLabel.text = "You've beaten the previous Highscore! " + "New Highscore: " + str(self.points)
+                    self.HighscoreLabel.render(200, 300)
+                else:
+                    self.HighscoreLabel.text = "Current Highscore: " + str(self.highscore)
+                    self.ScoreLabel.render(520, 300)
+
+                self.btn[1].render(self.mouse_position, self.button_x, 640)
+                self.btn[0].render(self.mouse_position, self.button_x, 560)
                 py.display.update()
                 return
 
@@ -224,3 +249,15 @@ class Whack(ScreenBase):
             self.ShowIndian = True;
             self.color = [255, 0 ,0]
         return
+
+    def set_highscore(self):
+        with open("highscores.txt", "w") as file:
+            file.write(str(self.points))
+
+    def get_highscore(self):
+        with open("highscores.txt", "r") as file:
+            data = file.read()
+            if data != "":
+                return int(data)
+            else:
+                return 0

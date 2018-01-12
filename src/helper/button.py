@@ -35,6 +35,8 @@ class Button:
         self.check_hover(mouse_position)
 
     def check_hover(self, mouse_position):
+        if mouse_position == None:
+            return
         if self.rect.collidepoint(mouse_position):
             self.is_hovering = True
         else:
