@@ -34,6 +34,7 @@ class Minigame_5(ScreenBase):
         self.gun_impact = py.image.load("resources/graphics/minigame_5/bulletimpact.png")
         self.gun_rect = py.Rect(468, 560, 50, 50)
         py.draw.rect(self.game.py_screen, [0, 0, 0], self.gun_rect)
+        self.gun_sound = py.mixer.Sound("resources/graphics/minigame_5/gun-gunshot-02.wav")
 
         # Defines TARGET, based on target.py
         self.target_img = py.image.load("resources/graphics/minigame_5/target.png")
@@ -70,7 +71,6 @@ class Minigame_5(ScreenBase):
         self.time_till_shot_disappear = 60
         self.gun_shot_succes = False
         self.gun_direction = 0
-        py.mixer.music.load("resources/graphics/minigame_5/gun-gunshot-02.mp3")
 
         self.gun_status_event = py.USEREVENT + 4
         self.time_till_gun_status_text_disappears = 1000
@@ -457,7 +457,7 @@ class Minigame_5(ScreenBase):
                 if self.game_is_started:
                     if not self.game_is_paused:
                         if self.reloaded_gun:
-                            py.mixer.music.play()
+                            self.gun_sound.play(loops = 0)
                             if self.collidecheck:
                                 self.reloaded_gun = False
                                 self.showing_target = False
@@ -468,7 +468,6 @@ class Minigame_5(ScreenBase):
                                 py.time.set_timer(self.reload_event, self.reload_speed)
                                 py.time.set_timer(self.gun_shot_disappear_event, self.time_till_shot_disappear)
                                 py.time.set_timer(self.gun_status_event, self.time_till_gun_status_text_disappears)
-                                py.mixer.music.play(0)
                                 self.score += 10
                                 self.target_counter += 1
 
