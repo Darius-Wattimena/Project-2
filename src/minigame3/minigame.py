@@ -124,7 +124,7 @@ class Minigame_3(ScreenBase):
     def player(self):
         player_width = 100
         player_height = 100
-        self.player_image = py.image.load("resources/graphics/minigame_3/testimage.png")
+        self.player_image = py.image.load("resources/graphics/minigame_3/cowboy.png")
         # Resize je foto omdat de photo kleiner is dan de player rect
         self.player_image = py.transform.scale(self.player_image, [player_width, player_height])
         self.player_rect = py.Rect(self.player_start_pos, [player_width, player_height])
@@ -133,7 +133,7 @@ class Minigame_3(ScreenBase):
     def enemy(self):
         enemy_width = 100
         enemy_height = 100
-        self.enemy_image = py.image.load("resources/graphics/minigame_3/testimage.png")
+        self.enemy_image = py.image.load("resources/graphics/minigame_3/cactus.png")
         # Resize je foto omdat de photo kleiner is dan de enemy rect
         self.enemy_image = py.transform.scale(self.enemy_image, [enemy_width, enemy_height])
         self.enemy_location = Enemy().get_location()
@@ -142,7 +142,7 @@ class Minigame_3(ScreenBase):
     def coyote(self):
         coyote_width = 100
         coyote_height = 100
-        self.coyote_image = py.image.load("resources/graphics/minigame_3/testimage.png")
+        self.coyote_image = py.image.load("resources/graphics/minigame_3/coyote.png")
         self.coyote_image = py.transform.scale(self.coyote_image, [coyote_width, coyote_height])
         self.coyote_location = self.coyote_start_pos
         self.coyote_rect = py.Rect(self.coyote_location, [coyote_width, coyote_height])
@@ -186,7 +186,7 @@ class Minigame_3(ScreenBase):
                             self.start()
                         else:
                             self.reset()
-                    elif self.btn[1].is_clicked(self.mouse_position):
+                    elif self.btn[1].is_clicked(self .mouse_position):
                         from src.global_screens.pick_minigame import PickMinigame
                         self.game.drawer.clear()
                         PickMinigame(self.game)
@@ -203,13 +203,13 @@ class Minigame_3(ScreenBase):
             self.game.py_screen.blit(self.player_image, self.player_rect)
 
             if self.enemy_is_spawned is True:
-                py.draw.rect(self.game.py_screen, [0, 0, 0], self.enemy_rect)
+                py.draw.rect(self.game.py_screen, [240, 230, 140], self.enemy_rect)
                 self.game.py_screen.blit(self.enemy_image, self.enemy_rect)
             if self.enemy_is_moving is True:
-                py.draw.rect(self.game.py_screen, [0, 0, 0], self.enemy_rect)
+                py.draw.rect(self.game.py_screen, [240, 230, 140], self.enemy_rect)
                 self.game.py_screen.blit(self.enemy_image, self.enemy_rect)
             if self.coyote_is_spawned is True:
-                py.draw.rect(self.game.py_screen, [0, 0, 0], self.coyote_rect)
+                py.draw.rect(self.game.py_screen, [240, 230, 140], self.coyote_rect)
                 self.game.py_screen.blit(self.coyote_image, self.coyote_rect)
             self.lives_label.render(100, 100)
         else:
