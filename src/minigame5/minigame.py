@@ -87,7 +87,7 @@ class Minigame_5(ScreenBase):
         self.target_counter = 0
         self.miss_counter = 0
 
-        # Defines TIMER
+        # Defines GAME TIMER
         self.time_font = py.font.Font("resources/fonts/Carnevalee Freakshow.ttf", 40)
         self.timer_font = py.font.Font("resources/fonts/Carnevalee Freakshow.ttf", 70)
         self.game_duration = 90
