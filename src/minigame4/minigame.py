@@ -87,7 +87,7 @@ class Minigame_4(ScreenBase):
         self.btn.append(PauseScreenButton(game.py_screen, "Start"))
         self.btn.append(PauseScreenButton(game.py_screen, "Back"))
 
-        self.paused_label = Label(self.game.py_screen, "Horse Racing", [249, 239, 196], 100, font="resources/fonts/Carnevalee Freakshow.ttf")
+        self.paused_label = Label(self.game.py_screen, "", [249, 239, 196], 100, font="resources/fonts/Carnevalee Freakshow.ttf")
 
         screen_center_width = self.game.py_screen.get_width() / 2
         self.button_x = screen_center_width - (self.btn[0].width / 2)
