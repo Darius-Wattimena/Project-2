@@ -10,7 +10,7 @@ class MainMenu(ScreenBase):
         self.game.set_screen(self)
         self.mouse_position = None
         game.drawer.add_background_image("resources/graphics/main_menu_background.png")
-        self.title = Label(game.py_screen, "Game Title", [0, 0, 0], 75, "resources/fonts/Carnevalee Freakshow.ttf")
+        self.title = Label(game.py_screen, self.game.config.title, [0, 0, 0], 75, "resources/fonts/Carnevalee Freakshow.ttf")
         self.btn = []
         self.btn.append(MainMenuButton(game.py_screen, "Start"))
         self.btn.append(MainMenuButton(game.py_screen, "Options"))
