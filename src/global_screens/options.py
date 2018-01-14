@@ -56,8 +56,8 @@ class Options(ScreenBase):
         self.debug_checkbox.render(self.mouse_position, options_label_right + 20, 185)
         self.full_screen_label.render(y=260, right=options_label_right)
         self.full_screen_checkbox.render(self.mouse_position, options_label_right + 20, 265)
-        self.volume_label.render(y=340, right=options_label_right)
-        self.language_label.render(y=420, right=options_label_right)
+        # self.volume_label.render(y=340, right=options_label_right)
+        # self.language_label.render(y=420, right=options_label_right)
         self.btn[0].render(self.mouse_position, button_x, 600)
         py.display.update()
 
